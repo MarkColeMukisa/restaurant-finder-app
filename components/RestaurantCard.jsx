@@ -107,7 +107,7 @@ const RestaurantCard = () => {
 
                 {/* Reviews */}
                 <div className="text-xs text-gray-500 mb-3">
-                  {restaurant.reviews} reviews • {restaurant.location}
+                  {restaurant.reviews?.length || 0} reviews • {restaurant.location}
                 </div>
 
                 {/* Featured Tags */}

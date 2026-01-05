@@ -122,31 +122,334 @@ export  const popularDestinations = [
       id: 1,
       name: 'Bella Vista',
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1551632786-fb3f32c4fd12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1504674900569-f3fb2991f5e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1555566999-5397f975edd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1555939594-58d7cb561091?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1537047902294-c1201df4bab7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1494521174747-ba271e882ffe?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1476124369162-f4978f60a8d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      ],
       cuisine: 'Italian',
       rating: 4.7,
-      reviews: 284,
+      reviews: '284 reviews',
       price: '$$$',
       deliveryTime: '25-35 min',
       distance: '0.8 miles',
       location: 'Downtown',
       isOpen: true,
       promotion: 'Free delivery',
-      featured: ['Pasta', 'Wine', 'Romantic']
+      featured: ['Pasta', 'Wine', 'Romantic'],
+      features: {
+        cuisines: ['Italian', 'Mediterranean', 'European'],
+        mealTypes: ['Lunch', 'Dinner', 'Brunch'],
+        specialDiets: ['Vegetarian options', 'Gluten-free options'],
+        amenities: [
+          'Accepts Credit Cards',
+          'Digital Payments',
+          'Family style',
+          'Free Wifi',
+          'Full Bar',
+          'Live Music',
+          'Non-smoking restaurant',
+          'Outdoor Seating',
+          'Parking Available',
+          'Reservations',
+          'Seating',
+          'Serves Alcohol',
+          'Table Service',
+          'Takeout',
+          'Wheelchair Accessible'
+        ]
+      },
+      parking: [
+        'Parking Available',
+        'Free off-street parking',
+        'Validated Parking'
+      ],
+      menu: [
+        {
+          id: 1,
+          name: 'Spaghetti Carbonara',
+          category: 'Pasta',
+          description: 'Classic Italian pasta with creamy sauce, bacon, and parmesan',
+          price: 18.99,
+          image: 'https://images.unsplash.com/photo-1612874742237-6526221fcf4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 2,
+          name: 'Margherita Pizza',
+          category: 'Pizza',
+          description: 'Fresh mozzarella, tomato sauce, basil, and olive oil',
+          price: 15.99,
+          image: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 3,
+          name: 'Risotto ai Funghi',
+          category: 'Rice',
+          description: 'Creamy risotto with wild mushrooms and truffle oil',
+          price: 22.99,
+          image: 'https://images.unsplash.com/photo-1611949186022-cce98ce8a4ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 4,
+          name: 'Tiramisu',
+          category: 'Dessert',
+          description: 'Traditional Italian dessert with mascarpone and espresso',
+          price: 9.99,
+          image: 'https://images.unsplash.com/photo-1571115764595-644a12c7cb25?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 5,
+          name: 'Panna Cotta',
+          category: 'Dessert',
+          description: 'Silky smooth cream dessert with berry compote',
+          price: 8.99,
+          image: 'https://images.unsplash.com/photo-1488477181946-85a2fdeedd0f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 6,
+          name: 'Fettuccine Alfredo',
+          category: 'Pasta',
+          description: 'Ribbon pasta with rich creamy parmesan sauce',
+          price: 17.99,
+          image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        }
+      ],
+      reviews: [
+        {
+          id: 1,
+          author: 'Maria Johnson',
+          rating: 5,
+          date: '2024-12-28',
+          title: 'Absolutely Fantastic!',
+          text: 'Best Italian food I have ever had! The pasta was perfectly cooked and the sauce was divine. The ambiance was romantic and the service was impeccable. Highly recommend!',
+          helpful: 45
+        },
+        {
+          id: 2,
+          author: 'James Wilson',
+          rating: 4,
+          date: '2024-12-20',
+          title: 'Great Experience',
+          text: 'Had a wonderful evening with my family. The food was excellent and the staff was very attentive. Only minor issue was the wait time during peak hours.',
+          helpful: 28
+        },
+        {
+          id: 3,
+          author: 'Emma Davis',
+          rating: 5,
+          date: '2024-12-15',
+          title: 'Perfect for Special Occasions',
+          text: 'Celebrated our anniversary here and it was perfect. The chef prepared a special menu for us and everything was incredible. Will definitely come back!',
+          helpful: 52
+        },
+        {
+          id: 4,
+          author: 'Robert Brown',
+          rating: 4,
+          date: '2024-12-10',
+          title: 'Solid Choice',
+          text: 'Good food and decent prices. The tiramisu was amazing. Service could be a bit faster, but overall a good dining experience.',
+          helpful: 19
+        },
+        {
+          id: 5,
+          author: 'Sarah Martinez',
+          rating: 5,
+          date: '2024-12-05',
+          title: 'Worth Every Penny',
+          text: 'Took my date here and she loved it. The presentation of dishes was beautiful and taste was exceptional. The wine pairing suggestions were spot on.',
+          helpful: 67
+        },
+        {
+          id: 6,
+          author: 'Michael Taylor',
+          rating: 3,
+          date: '2024-11-28',
+          title: 'Good but Expensive',
+          text: 'Food quality is good but prices are quite high. The portion sizes could be bigger. Good for special occasions but not for regular dining.',
+          helpful: 34
+        }
+      ],
+      dressCode: 'Smart Casual',
+      averageCost: '$25-50 per person',
+      paymentMethods: ['Credit Card', 'Debit Card', 'Digital Wallet', 'Cash'],
+      dietaryOptions: ['Vegetarian', 'Vegan', 'Gluten-free'],
+      reservationPolicy: 'Recommended for groups of 6+. Accepts walk-ins with possible wait during peak hours.',
+      languages: ['English', 'Italian', 'Spanish']
     },
     {
       id: 2,
       name: 'Sakura Sushi',
       image: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      images: [
+        'https://images.unsplash.com/photo-1559339352-11d035aa65de?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1553621042-f6e147245754?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1564489551768-f62db3f74ecc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1580959375944-abd0e72ada4f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1570973957440-6b80b54ae612?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1546068131-fac1268e35e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1509042239860-f550ce710b93?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+        'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+      ],
       cuisine: 'Japanese',
       rating: 4.5,
-      reviews: 156,
+      reviews: '156 reviews',
       price: '$$',
       deliveryTime: '30-40 min',
       distance: '1.2 miles',
       location: 'Midtown',
       isOpen: true,
       promotion: '20% off first order',
-      featured: ['Sushi', 'Ramen', 'Fresh']
+      featured: ['Sushi', 'Ramen', 'Fresh'],
+      closing: '11:00 PM',
+      features: {
+        cuisines: ['Japanese', 'Asian Fusion', 'East Asian'],
+        mealTypes: ['Lunch', 'Dinner', 'Drinks'],
+        specialDiets: ['Vegetarian options', 'Gluten-free options'],
+        amenities: [
+          'Accepts Credit Cards',
+          'Digital Payments',
+          'Free Wifi',
+          'Mastercard',
+          'Parking Available',
+          'Reservations',
+          'Seating',
+          'Serves Alcohol',
+          'Takeout',
+          'Television',
+          'Visa',
+          'Wheelchair Accessible'
+        ]
+      },
+      parking: [
+        'Street Parking',
+        'Parking Available'
+      ],
+      menu: [
+        {
+          id: 1,
+          name: 'California Roll',
+          category: 'Sushi',
+          description: 'Crab, cucumber, avocado wrapped in rice and nori',
+          price: 12.99,
+          image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 2,
+          name: 'Spicy Tuna Roll',
+          category: 'Sushi',
+          description: 'Fresh tuna with spicy mayo and jalapeños',
+          price: 13.99,
+          image: 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 3,
+          name: 'Tonkotsu Ramen',
+          category: 'Ramen',
+          description: 'Rich pork bone broth with tender chashu pork and egg',
+          price: 16.99,
+          image: 'https://images.unsplash.com/photo-1519194797361-ca92f30d8c93?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 4,
+          name: 'Edamame',
+          category: 'Appetizer',
+          description: 'Steamed soybeans with sea salt',
+          price: 5.99,
+          image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 5,
+          name: 'Miso Soup',
+          category: 'Soup',
+          description: 'Traditional soy-based soup with tofu and seaweed',
+          price: 4.99,
+          image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        },
+        {
+          id: 6,
+          name: 'Green Tea Cheesecake',
+          category: 'Dessert',
+          description: 'Creamy cheesecake with green tea flavor',
+          price: 7.99,
+          image: 'https://images.unsplash.com/photo-1533134242443-742c1a666b3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80'
+        }
+      ],
+      reviews: [
+        {
+          id: 1,
+          author: 'Lisa Chen',
+          rating: 5,
+          date: '2024-12-27',
+          title: 'Authentic and Delicious',
+          text: 'Amazing sushi! The fish is fresh and the rice is perfectly prepared. The chef clearly knows what they are doing. Will definitely come back for more!',
+          helpful: 58
+        },
+        {
+          id: 2,
+          author: 'David Lee',
+          rating: 5,
+          date: '2024-12-22',
+          title: 'Best Ramen in Town',
+          text: 'The tonkotsu ramen is absolutely incredible. The broth is rich and flavorful, the noodles are cooked perfectly. This place is a must-visit!',
+          helpful: 73
+        },
+        {
+          id: 3,
+          author: 'Jennifer Park',
+          rating: 4,
+          date: '2024-12-18',
+          title: 'Very Good Quality',
+          text: 'Fresh ingredients and skilled preparation. The sushi rolls are beautiful and taste amazing. Service is friendly and quick. Only downside is it gets crowded.',
+          helpful: 41
+        },
+        {
+          id: 4,
+          author: 'Kevin Anderson',
+          rating: 5,
+          date: '2024-12-12',
+          title: 'Exceeded Expectations',
+          text: 'First time trying authentic Japanese food here. Every dish was a delight. The miso soup, edamame, sushi - everything was perfect. Highly recommended!',
+          helpful: 85
+        },
+        {
+          id: 5,
+          author: 'Rachel Wong',
+          rating: 4,
+          date: '2024-12-08',
+          title: 'Great Value',
+          text: 'Prices are reasonable for the quality. The portions are generous. Loved the variety of sushi rolls available. Will be returning soon.',
+          helpful: 36
+        },
+        {
+          id: 6,
+          author: 'Tom Harris',
+          rating: 3,
+          date: '2024-11-30',
+          title: 'Good but Sometimes Inconsistent',
+          text: 'Usually great but had one visit where the sushi was not as fresh. Otherwise good food and nice atmosphere. Hope they maintain consistency.',
+          helpful: 22
+        }
+      ],
+      dressCode: 'Casual',
+      averageCost: '$15-30 per person',
+      paymentMethods: ['Credit Card', 'Debit Card', 'Digital Wallet', 'Cash'],
+      dietaryOptions: ['Vegetarian', 'Vegan', 'Gluten-free'],
+      reservationPolicy: 'Walk-ins welcome. Reservations recommended for groups of 8+ on weekends.',
+      languages: ['English', 'Japanese', 'Mandarin']
     },
     {
       id: 3,
@@ -154,14 +457,26 @@ export  const popularDestinations = [
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
       cuisine: 'Chinese',
       rating: 4.4,
-      reviews: 223,
+      reviews: '223 Reviews',
       price: '$$',
       deliveryTime: '35-45 min',
       distance: '1.5 miles',
       location: 'Chinatown',
       isOpen: true,
       promotion: 'Family combo deal',
-      featured: ['Dim Sum', 'Noodles', 'Authentic']
+      featured: ['Dim Sum', 'Noodles', 'Authentic'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Dine-in',
+        'Takeout',
+        'Reservations',
+        'Tea Selection',
+        'Parking Available',
+        'Family Friendly',
+        'Private Dining Rooms',
+        'Large Parties Welcome'
+      ]
     },
     {
       id: 4,
@@ -169,14 +484,26 @@ export  const popularDestinations = [
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
       cuisine: 'American',
       rating: 4.3,
-      reviews: 167,
+      reviews: '167 Reviews',
       price: '$$',
       deliveryTime: '15-25 min',
       distance: '0.3 miles',
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 5,
@@ -184,14 +511,26 @@ export  const popularDestinations = [
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
       cuisine: 'American',
       rating: 4.3,
-      reviews: 167,
+      reviews: '167 Reviews',
       price: '$$',
       deliveryTime: '15-25 min',
       distance: '0.3 miles',
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 6,
@@ -199,14 +538,26 @@ export  const popularDestinations = [
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
       cuisine: 'American',
       rating: 4.3,
-      reviews: 167,
+      reviews: '167 reviews',
       price: '$$',
       deliveryTime: '15-25 min',
       distance: '0.3 miles',
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 7,
@@ -214,14 +565,26 @@ export  const popularDestinations = [
       image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
       cuisine: 'American',
       rating: 4.3,
-      reviews: 167,
+      reviews: '167 reviews',
       price: '$$',
       deliveryTime: '15-25 min',
       distance: '0.3 miles',
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 8,
@@ -236,7 +599,19 @@ export  const popularDestinations = [
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 9,
@@ -251,7 +626,19 @@ export  const popularDestinations = [
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 10,
@@ -266,7 +653,19 @@ export  const popularDestinations = [
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
        {
       id: 11,
@@ -281,7 +680,19 @@ export  const popularDestinations = [
       location: 'University Row',
       isOpen: true,
       promotion: 'Buy 1 get 1 free',
-      featured: ['Burgers', 'Fries', 'Craft Beer']
+      featured: ['Burgers', 'Fries', 'Craft Beer'],
+      features: [
+        'WiFi',
+        'Delivery',
+        'Takeout',
+        'Dine-in',
+        'Fast Service',
+        'Outdoor Seating',
+        'Pet Friendly',
+        'Draft Beer',
+        'Sports TV',
+        'Casual Dining'
+      ]
     },
     {
       id: 12,
