@@ -60,7 +60,7 @@ const HowItWorks = () => {
             Discover the most loved restaurants in your area. From local favorites to award-winning cuisine.
           </p>
         </div>
-    <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-6 md:gap-8 p-6">
+    <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 md:gap-8 p-6">
       {services.map((service, index) => (
         <ServiceCard 
           key={index}

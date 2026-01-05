@@ -52,10 +52,10 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 overflow-hidden">
-      {/* Enhanced Background with subtle animation */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white via-slate-50 to-slate-100">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-200/30 via-transparent to-transparent"></div>
+    <div className="relative min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 overflow-hidden">
+      {/* Elegant Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-white to-orange-50">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-100/20 via-transparent to-transparent"></div>
       </div>
 
       {/* Main Content */}
@@ -66,55 +66,57 @@ const HeroSection = () => {
           <div className="text-center lg:text-left space-y-8 lg:space-y-10">
             {/* Header Section */}
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-4">
+              <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
                 <Award className="w-4 h-4" />
-                Trusted by 10,000+ food lovers
+                Discover Premium Dining Experiences
               </div>
 
               <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight">
-                Discover & Savor
-                <span className="block text-transparent  bg-clip-text bg-gradient-to-r from-red-800 to-purple-600 mt-2">
-                  Exceptional Flavors
+                Exquisite Dining,
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-700 to-red-600 mt-2">
+                  Moments to Cherish
                 </span>
               </h1>
 
               <p className="text-lg lg:text-xl text-gray-600 max-w-2xl leading-relaxed">
-                Find the perfect restaurant for every occasion. From local favorites to hidden gems,
-                we connect you with the best dining experiences in your city.
+                Explore the finest restaurants in your city. From Michelin-rated establishments to hidden culinary treasures,
+                find your next extraordinary dining destination.
               </p>
             </div>
 
             {/* Enhanced Search Bar */}
             <div className="max-w-2xl mx-auto lg:mx-0">
               <form onSubmit={handleSearch} className="space-y-3">
-                <div className="bg-white rounded-xl shadow-md p-1 border border-gray-100 hover:shadow-lg transition-all duration-300">
-                  <div className="flex flex-col sm:flex-row gap-1">
-                    <div className="flex-1 flex items-center gap-2 px-3 py-2.5">
-                      <MapPin className="w-4 h-4 text-blue-500" />
+                <div className="bg-white rounded-2xl shadow-lg border border-amber-100 hover:shadow-xl transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row gap-0 sm:gap-0">
+                    <div className="flex-1 flex items-center gap-3 px-4 py-3">
+                      <MapPin className="w-5 h-5 text-orange-600 flex-shrink-0" />
                       <input
                         type="text"
                         value={searchLocation}
                         onChange={(e) => setSearchLocation(e.target.value)}
-                        placeholder="Enter your location..."
-                        className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-sm"
+                        placeholder="City or neighborhood..."
+                        className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-sm min-w-0 font-medium"
                       />
                     </div>
-                    <div className="flex-1 flex items-center gap-2 px-3 py-2.5 border-l border-gray-100">
-                      <Utensils className="w-4 h-4 text-blue-500" />
+                    <div className="h-px sm:h-auto sm:w-px bg-amber-100"></div>
+                    <div className="flex-1 flex items-center gap-3 px-4 py-3">
+                      <Utensils className="w-5 h-5 text-orange-600 flex-shrink-0" />
                       <input
                         type="text"
                         value={searchCuisine}
                         onChange={(e) => setSearchCuisine(e.target.value)}
-                        placeholder="What are you craving?"
-                        className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-sm"
+                        placeholder="Cuisine or restaurant..."
+                        className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-sm min-w-0 font-medium"
                       />
                     </div>
+                    <div className="h-px sm:h-auto sm:w-px bg-amber-100"></div>
                     <button
                       type="submit"
-                      className="bg-red-800 text-white px-6 py-2.5 rounded-lg font-semibold hover:from-orange-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center gap-2 justify-center shadow-md hover:shadow-lg text-sm"
+                      className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-8 py-3 rounded-none sm:rounded-r-xl font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center gap-2 justify-center shadow-none hover:shadow-lg text-sm whitespace-nowrap flex-shrink-0"
                     >
-                      <Search className="w-4 h-4" />
-                      Search
+                      <Search className="w-4 h-4 flex-shrink-0" />
+                      <span className="hidden sm:inline">Search</span>
                     </button>
                   </div>
                 </div>

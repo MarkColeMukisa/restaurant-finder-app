@@ -1,79 +1,75 @@
 "use client";
 
-import React, { useState } from 'react';
-import Banner from './Banner';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <>
-      <Banner />
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'}`}>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between py-4">
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0">
+            <img 
+              src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/dummyLogo/prebuiltuiDummyLogo.svg" 
+              alt="Logo"
+              className="h-8 w-auto"
+            />
+          </Link>
 
-      <header className="flex items-center justify-between px-6 py-3 md:py-4 shadow max-w-5xl rounded-full mx-auto w-full bg-white mt-4 relative">
-      {/* Logo */}
-      <a href="https://prebuiltui.com">
-        <img 
-          src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/dummyLogo/prebuiltuiDummyLogo.svg" 
-          alt="Logo"
-          className="h-8 w-auto"
-        />
-      </a>
+          {/* Desktop Navigation Menu */}
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/" className={`text-sm font-medium transition-colors text-black hover:text-red-600`}>Home</Link>
+            <Link href="/restaurants" className={`text-sm font-medium transition-colors text-black hover:text-red-600`}>Restaurants</Link>
+            <a href="#" className={`text-sm font-medium transition-colors text-black hover:text-red-600`}>About</a>
+            <a href="#" className={`text-sm font-medium transition-colors text-black hover:text-red-600`}>Contact</a>
+          </nav>
 
-      {/* Navigation Menu */}
-      <nav 
-        className={`
-          max-md:fixed max-md:top-0 max-md:left-0 max-md:h-full max-md:overflow-hidden 
-          transition-all duration-300 bg-white/90 backdrop-blur-md flex-col md:flex-row flex items-center justify-center gap-8 text-gray-900 text-sm font-normal z-50
-          ${isMenuOpen ? "max-md:w-full" : "max-md:w-0"}
-        `}
-      >
-        <a className="hover:text-indigo-600 transition-colors" href="#">Products</a>
-        <a className="hover:text-indigo-600 transition-colors" href="#">Customer Stories</a>
-        <a className="hover:text-indigo-600 transition-colors" href="#">Pricing</a>
-        <a className="hover:text-indigo-600 transition-colors" href="#">Docs</a>
-        
-        {/* Close Button (Mobile Only) */}
-        <button 
-          onClick={() => setIsMenuOpen(false)} 
-          className="md:hidden text-gray-600 absolute top-6 right-6"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </nav>
+          {/* Right Side Actions */}
+          <div className="flex items-center gap-4">
+            {/* Desktop Sign In Button */}
+            <button className="hidden md:block px-6 py-2.5 rounded-lg text-sm font-semibold transition-all bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 shadow-md hover:shadow-lg transform hover:scale-105">
+              Sign In
+            </button>
 
-      {/* Right Side Actions */}
-      <div className="flex items-center space-x-4">
-        {/* Theme Toggle Button */}
-        <button className="size-8 flex items-center justify-center hover:bg-gray-100 transition border border-slate-300 rounded-md">
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.5 10.39a2.889 2.889 0 1 0 0-5.779 2.889 2.889 0 0 0 0 5.778M7.5 1v.722m0 11.556V14M1 7.5h.722m11.556 0h.723m-1.904-4.596-.511.51m-8.172 8.171-.51.511m-.001-9.192.51.51m8.173 8.171.51.511"
-              stroke="#353535" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+            {/* Mobile Menu Toggle */}
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden"
+            >
+              {isMenuOpen ? (
+                <X className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
+              ) : (
+                <Menu className={`w-6 h-6 ${isScrolled ? 'text-gray-900' : 'text-white'}`} />
+              )}
+            </button>
+          </div>
+        </div>
 
-        {/* Desktop Sign Up Button */}
-        <a className="hidden md:flex bg-indigo-600 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-indigo-700 transition" href="#">
-          Sign up
-        </a>
-
-        {/* Mobile Open Menu Button */}
-        <button 
-          onClick={() => setIsMenuOpen(true)} 
-          className="md:hidden text-gray-600"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className={`md:hidden pb-4 space-y-3 ${isScrolled ? 'bg-white/95 backdrop-blur-md' : 'bg-black/20 backdrop-blur-sm'}`}>
+            <Link href="/" className={`block text-sm font-medium transition-colors text-black hover:text-red-600`}>Home</Link>
+            <Link href="/restaurants" className={`block text-sm font-medium transition-colors text-black hover:text-red-600`}>Restaurants</Link>
+            <a href="#" className={`block text-sm font-medium transition-colors text-black hover:text-red-600`}>About</a>
+            <a href="#" className={`block text-sm font-medium transition-colors text-black hover:text-red-600`}>Contact</a>
+          </div>
+        )}
       </div>
     </header>
-    </>
-
-
-    
   );
 };
 
