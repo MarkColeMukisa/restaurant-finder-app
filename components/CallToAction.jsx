@@ -10,7 +10,7 @@ export default function CallToAction() {
             `}</style>
             
             <section className='flex items-center justify-center p-4 py-20'>
-                <div className=' max-w-7xl mx-auto relative w-full bg-linear-to-bl from-indigo-600 to-indigo-900 rounded-2xl border border-indigo-500 px-6 py-16 pb-18 flex flex-col items-center text-center'>
+                <div className=' max-w-6xl mx-auto relative w-full bg-linear-to-bl from-indigo-600 to-indigo-900 rounded-2xl border border-indigo-500 px-6 py-16 pb-18 flex flex-col items-center text-center'>
                     <div className='inline-block bg-white/10 backdrop-blur-md rounded-full px-6 py-2 mb-6'>
                         <span className='text-slate-200 text-xs'>Welcome to PrebuiltUI</span>
                     </div>

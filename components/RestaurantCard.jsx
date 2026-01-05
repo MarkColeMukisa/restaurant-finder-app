@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { Star, MapPin, Clock, Heart, DollarSign, Utensils, ChevronLeft, ChevronRight } from 'lucide-react';
 import { popularRestaurants } from '../assets/assets';
 
@@ -25,14 +26,14 @@ const RestaurantCard = () => {
 
   return (
     <section className="py-16 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Restaurants Grid - 4 cards per row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {currentRestaurants.map((restaurant) => (
             <div
               key={restaurant.id}
-              className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden cursor-pointer"
+              className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden cursor-pointer flex flex-col"
             >
               {/* Image Container */}
               <div className="relative h-48 overflow-hidden">
@@ -72,7 +73,7 @@ const RestaurantCard = () => {
               </div>
 
               {/* Restaurant Info */}
-              <div className="p-4">
+              <div className="p-4 flex flex-col flex-grow">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
@@ -110,7 +111,7 @@ const RestaurantCard = () => {
                 </div>
 
                 {/* Featured Tags */}
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 mb-4 flex-grow">
                   {restaurant.featured.map((tag, index) => (
                     <span
                       key={index}
@@ -120,6 +121,13 @@ const RestaurantCard = () => {
                     </span>
                   ))}
                 </div>
+
+                {/* View Details Button */}
+                <Link href={`/restaurants/${restaurant.id}`} className="w-full">
+                  <button className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-md">
+                    View Details
+                  </button>
+                </Link>
               </div>
             </div>
           ))}

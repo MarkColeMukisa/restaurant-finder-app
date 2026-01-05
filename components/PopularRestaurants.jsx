@@ -1,13 +1,14 @@
 "use client";
 
 import React from 'react';
+import Link from 'next/link';
 import { Star, MapPin, Clock, Heart, DollarSign, Utensils } from 'lucide-react';
 import { popularRestaurants } from '../assets/assets';
 
 const PopularRestaurants = () => {
   return (
     <section className="py-16 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -23,7 +24,7 @@ const PopularRestaurants = () => {
           {popularRestaurants.slice(0, 8).map((restaurant) => (
             <div
               key={restaurant.id}
-              className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden cursor-pointer"
+              className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden cursor-pointer flex flex-col"
             >
               {/* Image Container */}
               <div className="relative h-48 overflow-hidden">
@@ -63,7 +64,7 @@ const PopularRestaurants = () => {
               </div>
 
               {/* Restaurant Info */}
-              <div className="p-4">
+              <div className="p-4 flex flex-col flex-grow">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
@@ -101,7 +102,7 @@ const PopularRestaurants = () => {
                 </div>
 
                 {/* Featured Tags */}
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-1 mb-3 flex-grow">
                   {restaurant.featured.map((tag, index) => (
                     <span
                       key={index}
@@ -111,12 +112,19 @@ const PopularRestaurants = () => {
                     </span>
                   ))}
                 </div>
+
+                {/* View Details Button */}
+                <Link href={`/restaurants/${restaurant.id}`} className="w-full">
+                  <button className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-md text-sm">
+                    View Details
+                  </button>
+                </Link>
               </div>
             </div>
           ))}
         </div>
         <div className='text-center mt-10'>
-          <button type="button" class="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-blue-400/30 active:scale-95 transition">
+          <button type="button" className="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-blue-400/30 active:scale-95 transition">
             View All Restaurants
           </button>
     </div>

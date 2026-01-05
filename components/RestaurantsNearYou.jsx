@@ -7,7 +7,7 @@ import { popularRestaurants } from '../assets/assets';
 const RestaurantsNearYou = () => {
   return (
     <section className="py-16 bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -116,7 +116,7 @@ const RestaurantsNearYou = () => {
           ))}
         </div>
         <div className='text-center mt-10'>
-          <button type="button" class="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-blue-400/30 active:scale-95 transition">
+          <button type="button" className="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-blue-400/30 active:scale-95 transition">
             View All Restaurants
           </button>
     </div>
