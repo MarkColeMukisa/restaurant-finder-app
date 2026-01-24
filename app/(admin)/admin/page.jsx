@@ -73,9 +73,8 @@ const AppointmentStatus = {
 const PaymentStatus = {
   PENDING: "PENDING",
   SUCCESS: "SUCCESS",
-  FAILDED: "FAILDED",
+  FAILED: "FAILED",
 };
-
 export default function SidebarV1() {
   const analytics = [
     {
