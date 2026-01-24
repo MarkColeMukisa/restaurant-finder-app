@@ -41,9 +41,9 @@ const Navbar = () => {
           {/* Right Side Actions */}
           <div className="flex items-center gap-4">
             {/* Desktop Sign In Button */}
-            <button className="hidden md:block px-6 py-2.5 rounded-lg text-sm font-semibold transition-all bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 shadow-md hover:shadow-lg transform hover:scale-105">
+            <Link href="/admin" className="hidden md:block px-6 py-2.5 rounded-lg text-sm font-semibold transition-all bg-gradient-to-r from-orange-600 to-red-600 text-white hover:from-orange-700 hover:to-red-700 shadow-md hover:shadow-lg transform hover:scale-105">
               Sign In
-            </button>
+            </Link>
 
             {/* Mobile Menu Toggle */}
             <button 
