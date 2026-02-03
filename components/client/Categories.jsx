@@ -9,7 +9,7 @@ const Categories = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const scrollContainerRef = useRef(null);
 
-  
+
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollBy({ left: -200, behavior: 'smooth' });
@@ -28,7 +28,7 @@ const Categories = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Explore by <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Cuisine</span>
+            Explore by <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">Cuisine</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover restaurants by your favorite cuisine types. Tap to explore curated collections.
@@ -66,11 +66,10 @@ const Categories = () => {
               >
                 {/* Circular Image Container */}
                 <div className="relative mb-4">
-                  <div className={`w-24 h-24 rounded-full p-1 transition-all duration-300 transform group-hover:scale-110 ${
-                    activeCategory === category.id 
-                      ? `${category.bgColor} shadow-lg ring-4 ring-white ring-offset-2 ring-offset-slate-50 scale-110` 
-                      : 'bg-white shadow-md group-hover:shadow-lg'
-                  }`}>
+                  <div className={`w-24 h-24 rounded-full p-1 transition-all duration-300 transform group-hover:scale-110 ${activeCategory === category.id
+                    ? `${category.bgColor} shadow-lg ring-4 ring-white ring-offset-2 ring-offset-slate-50 scale-110`
+                    : 'bg-white shadow-md group-hover:shadow-lg'
+                    }`}>
                     <div className="w-full h-full rounded-full overflow-hidden border-2 border-white">
                       <img
                         src={category.image}
@@ -79,25 +78,22 @@ const Categories = () => {
                       />
                     </div>
                   </div>
-                  
+
                   {/* Active Indicator */}
                   {activeCategory === category.id && (
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
-                      <div className="w-3 h-3 bg-blue-600 rounded-full ring-2 ring-white"></div>
+                      <div className="w-3 h-3 bg-orange-600 rounded-full ring-2 ring-white"></div>
                     </div>
                   )}
                 </div>
 
                 {/* Text Content */}
                 <div className="space-y-1">
-                  <h3 className={`font-semibold transition-colors duration-200 ${
-                    activeCategory === category.id ? 'text-blue-600' : 'text-gray-900 group-hover:text-gray-700'
-                  }`}>
+                  <h3 className={`font-semibold transition-colors duration-200 ${activeCategory === category.id ? 'text-orange-600' : 'text-gray-900 group-hover:text-gray-700'
+                    }`}>
                     {category.name}
                   </h3>
-                  <p className={`text-sm transition-colors duration-200 ${
-                    activeCategory === category.id ? 'text-blue-500' : 'text-gray-500 group-hover:text-gray-600'
-                  }`}>
+                  <p className={`text-sm transition-colors duration-200 ${activeCategory === category.id ? 'text-orange-500' : 'text-gray-500 group-hover:text-gray-600'}`}>
                     {category.count} places
                   </p>
                 </div>

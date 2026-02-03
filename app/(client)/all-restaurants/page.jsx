@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import RestaurantCard from '@/components/RestaurantCard';
+import RestaurantCard from '@/components/client/RestaurantCard';
 
 export default function AllRestaurantsPage() {
   return (

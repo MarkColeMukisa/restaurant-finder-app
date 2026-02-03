@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -75,14 +75,59 @@ const PaymentStatus = {
   SUCCESS: "SUCCESS",
   FAILED: "FAILED",
 };
+
+const STORAGE_KEY = "admin_restaurants";
+
 export default function SidebarV1() {
+  // Full list of restaurants for dashboard widgets
+  const [recentRestaurants, setRecentRestaurants] = useState([]);
+
+  // Get restaurant count from localStorage
+  const [restaurantCount, setRestaurantCount] = useState(0);
+
+  // Sync restaurants from localStorage
+  useEffect(() => {
+    const syncFromStorage = () => {
+      if (typeof window === "undefined") return;
+
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) {
+        setRestaurantCount(0);
+        setRecentRestaurants([]);
+        return;
+      }
+
+      try {
+        const restaurants = JSON.parse(stored) || [];
+        setRestaurantCount(restaurants.length);
+        setRecentRestaurants(restaurants);
+      } catch (e) {
+        // Ignore parse errors
+      }
+    };
+
+    const handleRestaurantsUpdate = () => {
+      syncFromStorage();
+    };
+
+    // Initial sync
+    syncFromStorage();
+
+    // Listen for custom event
+    window.addEventListener("restaurantsUpdated", handleRestaurantsUpdate);
+
+    return () => {
+      window.removeEventListener("restaurantsUpdated", handleRestaurantsUpdate);
+    };
+  }, []);
+
   const analytics = [
     {
       title: "Total Restaurants",
-      count: 1234,
+      count: restaurantCount,
       icon: Users,
       unit: "",
-      detailLink: "/analytics/patients",
+      detailLink: "/admin/restuarant",
     },
     {
       title: "Reservations",
@@ -212,17 +257,18 @@ export default function SidebarV1() {
       updatedAt: new Date("2024-11-03T10:15:00Z"),
     },
   ];
+
   const sidebarLinks = [
     {
       title: "Dashboard",
-      href: "/dashboard",
+      href: "/admin",
       icon: Home,
     },
     {
       title: "Restaurants",
-      href: "/restaurant",
+      href: "/admin/restuarant",
       icon: ShoppingCart,
-      count: 6,
+      count: restaurantCount,
     },
     {
       title: "Products",
@@ -338,7 +384,7 @@ export default function SidebarV1() {
               </Link>
             </nav>
           </div>
-         
+
         </div>
       </div>
       <div className="flex flex-col">
@@ -464,7 +510,7 @@ export default function SidebarV1() {
               <h1 className="scroll-m-20 text-2xl font-extrabold tracking-tight mb-3">
                 Welcome back Admin!
               </h1>
-              
+
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 py-6">
@@ -498,62 +544,52 @@ export default function SidebarV1() {
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle>Recent Appointments</CardTitle>
+                    <CardTitle>Recent Restaurants</CardTitle>
                     <Button asChild>
-                      <Link href="/dashboard/doctor/appointments">
+                      <Link href="/admin/restuarant">
                         View All
                       </Link>
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent className="grid gap-4">
-                  {appointments &&
-                    appointments.slice(0, 5).map((item) => {
-                      return (
-                        <Link
-                          key={item.id}
-                          href={`/dashboard/doctor/appointments/view/${item.id}`}
-                          className={
-                            "border mb-2 border-gray-300 shadow-sm text-xs bg-white py-3 px-2 inline-block w-full rounded-md dark:text-slate-900"
-                          }
+                  {recentRestaurants && recentRestaurants.length ? (
+                    recentRestaurants
+                      .slice(-5)
+                      .reverse()
+                      .map((restaurant) => (
+                        <div
+                          key={restaurant.id}
+                          className="border mb-2 border-gray-300 shadow-sm text-xs bg-white py-3 px-3 inline-block w-full rounded-md dark:text-slate-900"
                         >
                           <div className="flex justify-between items-center pb-2">
-                            <h2>
-                              {item.firstName} {item.lastName}
+                            <h2 className="font-semibold">
+                              {restaurant.name}
                             </h2>
-                            <div className="flex items-center ">
-                              <History className="w-4 h-4 mr-2" />
-                              <span>2m ago</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center font-semibold">
-                              <CalendarCheck className="w-4 h-4 mr-2" />
-                              <span>{item.appointmentFormattedDate}</span>
-                            </div>
-                            <span className="font-semibold">
-                              {item.appointmentTime}
-                            </span>
-                            <div
-                              className={cn(
-                                "flex items-center text-blue-600",
-                                item.status === "approved" &&
-                                "text-green-600 font-semibold"
-                              )}
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium ${restaurant.status === "Active"
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-slate-100 text-slate-700"
+                                }`}
                             >
-                              {item.status === "pending" ? (
-                                <CircleEllipsis className="mr-2 w-4 h-4" />
-                              ) : item.status === "approved" ? (
-                                <Check className="mr-2 w-4 h-4" />
-                              ) : (
-                                <X className="mr-2 w-4 h-4" />
-                              )}
-                              <span>{item.status}</span>
-                            </div>
+                              {restaurant.status || "Active"}
+                            </span>
                           </div>
-                        </Link>
-                      );
-                    })}
+                          <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+                            <span className="font-medium text-foreground">
+                              {restaurant.cuisine || "No cuisine set"}
+                            </span>
+                            <span className="truncate">
+                              {restaurant.location || "No location set"}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      No restaurants yet. Create one from the Restaurants page.
+                    </p>
+                  )}
                 </CardContent>
               </Card>
               <Card>

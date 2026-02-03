@@ -1,6 +1,6 @@
 import React from 'react';
-import {Mail, Phone, MapPin } from 'lucide-react';
-import { linkSections, socialLinks } from '../assets/assets';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import { linkSections, socialLinks } from '@/assets/assets';
 
 const Footer = () => {
   return (
@@ -12,13 +12,13 @@ const Footer = () => {
             {/* Brand Section */}
             <div className="lg:col-span-1">
               <h2 className="text-2xl font-bold text-white mb-4">
-                Restaurant<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Finder</span>
+                Restaurant<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-400">Finder</span>
               </h2>
               <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                Discover the best dining experiences in your city. From cozy cafes to fine dining, 
+                Discover the best dining experiences in your city. From cozy cafes to fine dining,
                 we connect food lovers with their perfect meal.
               </p>
-              
+
               {/* Contact Info */}
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-gray-400 text-sm">
@@ -46,8 +46,8 @@ const Footer = () => {
                   <ul className="space-y-3">
                     {section.links.map((link, i) => (
                       <li key={i}>
-                        <a 
-                          href="#" 
+                        <a
+                          href="#"
                           className="text-gray-400 hover:text-white text-sm transition-colors duration-200 hover:underline"
                         >
                           {link}
@@ -66,7 +66,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
             <p className="text-gray-400 text-sm text-center md:text-left">
-              © 2025 RestaurantFinder. All rights reserved.
+              © 2026 RestaurantFinder. All rights reserved.
             </p>
 
             {/* Social Links */}

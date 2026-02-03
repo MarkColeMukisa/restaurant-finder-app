@@ -23,11 +23,9 @@ const Navbar = () => {
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0">
-            <img 
-              src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/dummyLogo/prebuiltuiDummyLogo.svg" 
-              alt="Logo"
-              className="h-8 w-auto"
-            />
+            <h1 className="text-xl font-black text-gray-900">
+              Restaurant<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">Finder</span>
+            </h1>
           </Link>
 
           {/* Desktop Navigation Menu */}
@@ -46,7 +44,7 @@ const Navbar = () => {
             </Link>
 
             {/* Mobile Menu Toggle */}
-            <button 
+            <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden"
             >

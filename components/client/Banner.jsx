@@ -1,13 +1,13 @@
 
 export default function Banner() {
     return (
-        <div className="w-full py-2.5 font-medium text-sm text-white bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500">
+        <div className="w-full py-2.5 font-medium text-sm text-white bg-gradient-to-r from-orange-600 to-red-600">
             <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row justify-center items-center gap-4 text-center">
-                <p>🚚 Free Shipping on Orders Above $50</p>
+                <p>🍽️ Over 500+ Top-Rated Restaurants</p>
                 <span className="hidden sm:inline">|</span>
-                <p>🎁 20% OFF on First Purchase</p>
+                <p>🏷️ Save up to 20% with Exclusive Offers</p>
                 <span className="hidden sm:inline">|</span>
-                <p>🔐 Use Code: <strong>WELCOME10</strong></p>
+                <p>📍 Discover Local Favorites Near You</p>
             </div>
         </div>
     );

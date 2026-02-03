@@ -2,16 +2,16 @@
 
 import React from 'react';
 import { Star, MapPin, Clock, Heart, DollarSign, Utensils } from 'lucide-react';
-import { popularRestaurants } from '../assets/assets';
+import { popularRestaurants } from '@/assets/assets';
 
-const RestaurantsNearYou = () => {
+const TopRelatedRestaurants = () => {
   return (
     <section className="py-16 bg-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Restaurants <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Near You</span>
+            Top Related <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600">Restaurants</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover the most loved restaurants in your area. From local favorites to award-winning cuisine.
@@ -32,10 +32,10 @@ const RestaurantsNearYou = () => {
                   alt={restaurant.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
+
                 {/* Favorite Button */}
                 <button className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-300 transform hover:scale-110 shadow-md">
                   <Heart className="w-4 h-4 text-gray-600 hover:text-red-500 transition-colors" />
@@ -43,11 +43,10 @@ const RestaurantsNearYou = () => {
 
                 {/* Status Badge */}
                 <div className="absolute top-3 left-3">
-                  <div className={`px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
-                    restaurant.isOpen 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-red-500 text-white'
-                  }`}>
+                  <div className={`px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${restaurant.isOpen
+                    ? 'bg-green-500 text-white'
+                    : 'bg-red-500 text-white'
+                    }`}>
                     {restaurant.isOpen ? 'Open Now' : 'Closed'}
                   </div>
                 </div>
@@ -55,7 +54,7 @@ const RestaurantsNearYou = () => {
                 {/* Promotion Badge */}
                 {restaurant.promotion && (
                   <div className="absolute bottom-3 left-3">
-                    <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                    <div className="bg-orange-600 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                       {restaurant.promotion}
                     </div>
                   </div>
@@ -71,13 +70,13 @@ const RestaurantsNearYou = () => {
                       {restaurant.name}
                     </h3>
                     <div className="flex items-center gap-2 text-gray-600 text-sm mb-2">
-                      <Utensils className="w-4 h-4 text-blue-500" />
+                      <Utensils className="w-4 h-4 text-orange-500" />
                       <span>{restaurant.cuisine}</span>
                       <DollarSign className="w-4 h-4 text-green-500" />
                       <span>{restaurant.price}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg flex-shrink-0 ml-2">
+                  <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg flex-shrink-0 ml-2">
                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
                     <span className="text-sm font-semibold text-gray-900">{restaurant.rating}</span>
                   </div>
@@ -102,10 +101,10 @@ const RestaurantsNearYou = () => {
 
                 {/* Featured Tags */}
                 <div className="flex flex-wrap gap-1">
-                  {restaurant.featured.map((tag, index) => (
+                  {restaurant.featured?.map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                      className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200"
                     >
                       {tag}
                     </span>
@@ -116,13 +115,13 @@ const RestaurantsNearYou = () => {
           ))}
         </div>
         <div className='text-center mt-10'>
-          <button type="button" className="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-blue-400/30 active:scale-95 transition">
+          <button type="button" className="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-orange-400/30 active:scale-95 transition">
             View All Restaurants
           </button>
-    </div>
+        </div>
       </div>
     </section>
   );
 };
 
-export default RestaurantsNearYou;
+export default TopRelatedRestaurants;

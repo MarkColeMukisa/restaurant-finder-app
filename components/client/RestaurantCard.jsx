@@ -1,27 +1,36 @@
 "use client";
-
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Star, MapPin, Clock, Heart, DollarSign, Utensils } from 'lucide-react';
-import { popularRestaurants } from '../assets/assets';
+import { Star, MapPin, Clock, Heart, DollarSign, Utensils, ChevronLeft, ChevronRight } from 'lucide-react';
+import { popularRestaurants } from '@/assets/assets';
 
-const PopularRestaurants = () => {
+const RestaurantCard = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const restaurantsPerPage = 12;
+
+  // Pagination logic
+  const totalPages = Math.ceil(popularRestaurants.length / restaurantsPerPage);
+  const indexOfLastRestaurant = currentPage * restaurantsPerPage;
+  const indexOfFirstRestaurant = indexOfLastRestaurant - restaurantsPerPage;
+  const currentRestaurants = popularRestaurants.slice(indexOfFirstRestaurant, indexOfLastRestaurant);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
   return (
     <section className="py-16 bg-slate-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Popular <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Restaurants</span>
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover the most loved restaurants in your area. From local favorites to award-winning cuisine.
-          </p>
-        </div>
 
         {/* Restaurants Grid - 4 cards per row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {popularRestaurants.slice(0, 8).map((restaurant) => (
+          {currentRestaurants.map((restaurant) => (
             <div
               key={restaurant.id}
               className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 overflow-hidden cursor-pointer flex flex-col"
@@ -33,10 +42,10 @@ const PopularRestaurants = () => {
                   alt={restaurant.name}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                
+
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
+
                 {/* Favorite Button */}
                 <button className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-300 transform hover:scale-110 shadow-md">
                   <Heart className="w-4 h-4 text-gray-600 hover:text-red-500 transition-colors" />
@@ -44,11 +53,10 @@ const PopularRestaurants = () => {
 
                 {/* Status Badge */}
                 <div className="absolute top-3 left-3">
-                  <div className={`px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${
-                    restaurant.isOpen 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-red-500 text-white'
-                  }`}>
+                  <div className={`px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm ${restaurant.isOpen
+                    ? 'bg-green-500 text-white'
+                    : 'bg-red-500 text-white'
+                    }`}>
                     {restaurant.isOpen ? 'Open Now' : 'Closed'}
                   </div>
                 </div>
@@ -56,7 +64,7 @@ const PopularRestaurants = () => {
                 {/* Promotion Badge */}
                 {restaurant.promotion && (
                   <div className="absolute bottom-3 left-3">
-                    <div className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
+                    <div className="bg-orange-600 text-white px-2 py-1 rounded-full text-xs font-semibold backdrop-blur-sm">
                       {restaurant.promotion}
                     </div>
                   </div>
@@ -72,13 +80,13 @@ const PopularRestaurants = () => {
                       {restaurant.name}
                     </h3>
                     <div className="flex items-center gap-2 text-gray-600 text-sm mb-2">
-                      <Utensils className="w-4 h-4 text-blue-500" />
+                      <Utensils className="w-4 h-4 text-orange-500" />
                       <span>{restaurant.cuisine}</span>
                       <DollarSign className="w-4 h-4 text-green-500" />
                       <span>{restaurant.price}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg flex-shrink-0 ml-2">
+                  <div className="flex items-center gap-1 bg-orange-50 px-2 py-1 rounded-lg flex-shrink-0 ml-2">
                     <Star className="w-4 h-4 text-yellow-500 fill-current" />
                     <span className="text-sm font-semibold text-gray-900">{restaurant.rating}</span>
                   </div>
@@ -102,11 +110,11 @@ const PopularRestaurants = () => {
                 </div>
 
                 {/* Featured Tags */}
-                <div className="flex flex-wrap gap-1 mb-3 flex-grow">
+                <div className="flex flex-wrap gap-1 mb-4 flex-grow">
                   {restaurant.featured.map((tag, index) => (
                     <span
                       key={index}
-                      className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                      className="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded-lg text-xs font-medium hover:bg-orange-50 hover:text-orange-600 transition-colors duration-200"
                     >
                       {tag}
                     </span>
@@ -115,7 +123,7 @@ const PopularRestaurants = () => {
 
                 {/* View Details Button */}
                 <Link href={`/restaurants/${restaurant.id}`} className="w-full">
-                  <button className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 shadow-md text-sm">
+                  <button className="w-full px-4 py-2 bg-gradient-to-r from-orange-600 to-red-600 text-white font-semibold rounded-lg hover:from-orange-700 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-md">
                     View Details
                   </button>
                 </Link>
@@ -123,14 +131,51 @@ const PopularRestaurants = () => {
             </div>
           ))}
         </div>
-        <div className='text-center mt-10'>
-          <button type="button" className="border border-gray-500/30 px-4 py-2 text-sm text-gray-800 rounded bg-white hover:text-white hover:bg-orange-400 hover:border-blue-400/30 active:scale-95 transition">
-            View All Restaurants
+
+        {/* Pagination */}
+        <div className="flex items-center justify-center gap-4 mt-12">
+          <button
+            onClick={prevPage}
+            disabled={currentPage === 1}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${currentPage === 1
+              ? 'text-gray-400 cursor-not-allowed'
+              : 'text-gray-700 hover:text-orange-600 hover:bg-orange-50'
+              }`}
+          >
+            <ChevronLeft className="w-5 h-5" />
+            Previous
           </button>
-    </div>
+
+          <div className="flex items-center gap-2">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => paginate(index + 1)}
+                className={`w-12 h-12 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center ${currentPage === index + 1
+                  ? 'bg-orange-600 text-white shadow-lg'
+                  : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={nextPage}
+            disabled={currentPage === totalPages}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${currentPage === totalPages
+              ? 'text-gray-400 cursor-not-allowed'
+              : 'text-gray-700 hover:text-orange-600 hover:bg-orange-50'
+              }`}
+          >
+            Next
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </section>
   );
 };
 
-export default PopularRestaurants;
+export default RestaurantCard;

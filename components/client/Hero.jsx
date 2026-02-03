@@ -123,21 +123,21 @@ const HeroSection = () => {
               </form>
 
               {/* Popular Cuisines - Also Reduced */}
-              <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mt-3">
-                <span className="text-xs text-gray-500 mr-1">Popular:</span>
-                {popularCuisines.map((cuisine) => (
-                  <button
-                    key={cuisine}
-                    onClick={() => setSearchCuisine(cuisine)}
-                    className="text-xs text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    {cuisine}
-                  </button>
-                )).reduce((prev, curr, index) => [
-                  prev,
-                  <span key={`dot-${index}`} className="text-gray-300 text-xs">•</span>,
-                  curr
-                ])}
+              <div className="flex flex-wrap justify-center lg:justify-start gap-1.5 mt-3 items-center">
+                <span className="text-xs text-gray-500 mr-2">Popular:</span>
+                {popularCuisines.map((cuisine, index) => (
+                  <React.Fragment key={cuisine}>
+                    <button
+                      onClick={() => setSearchCuisine(cuisine)}
+                      className="text-xs text-gray-600 hover:text-orange-600 transition-colors duration-200"
+                    >
+                      {cuisine}
+                    </button>
+                    {index < popularCuisines.length - 1 && (
+                      <span className="text-gray-300 text-xs">•</span>
+                    )}
+                  </React.Fragment>
+                ))}
               </div>
             </div>
 
@@ -145,8 +145,8 @@ const HeroSection = () => {
             <div className="flex flex-wrap justify-center lg:justify-start gap-8 lg:gap-12 pt-6">
               <div className="text-center lg:text-left">
                 <div className="flex items-center gap-2 justify-center lg:justify-start">
-                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <Users className="w-5 h-5 text-blue-600" />
+                  <div className="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-orange-600" />
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-gray-900">50K+</div>
@@ -222,7 +222,7 @@ const HeroSection = () => {
                       : 'bg-red-500/90 text-white'
                     : currentItem.isFeatured
                       ? 'bg-orange-500/90 text-white'
-                      : 'bg-blue-500/90 text-white'
+                      : 'bg-orange-500/90 text-white'
                     }`}>
                     {currentItem.type === 'restaurant' ? currentItem.status : 'Featured'}
                   </div>
@@ -323,7 +323,7 @@ const HeroSection = () => {
                     }, 400);
                   }}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentIndex
-                    ? 'bg-blue-600 w-8'
+                    ? 'bg-orange-600 w-8'
                     : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                 />
