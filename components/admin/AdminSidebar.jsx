@@ -10,9 +10,6 @@ import {
     Store,
     Settings,
     LogOut,
-    ChevronLeft,
-    Bell,
-    ShieldCheck,
     MessageSquare
 } from "lucide-react";
 import { motion } from "framer-motion";

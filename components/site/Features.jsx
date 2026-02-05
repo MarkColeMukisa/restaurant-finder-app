@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapPin, Filter, Languages, Star, ShieldCheck, Globe2, Landmark, UtensilsCrossed } from "lucide-react";
+import { Star, ShieldCheck, Globe2, Landmark, UtensilsCrossed } from "lucide-react";
 import { motion } from "framer-motion";
 
 const features = [

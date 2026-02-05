@@ -16,6 +16,15 @@ export async function POST(req) {
             );
         }
 
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return NextResponse.json(
+                { error: "Invalid email address" },
+                { status: 400 }
+            );
+        }
+
         // Insert into database
         await db.insert(inquiries).values({
             id: nanoid(),

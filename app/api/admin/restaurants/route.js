@@ -38,11 +38,39 @@ export async function POST(req) {
 
     try {
         const body = await req.json();
+
+        // Destructure and Validate
+        const { name, description, cuisine, priceRange, location, imageUrl, isPopular, isTouristFavorite, isVegetarianFriendly, lat, lng, websiteUrl, menuUrl, phone, openingHours, features } = body;
+
+        if (!name || typeof name !== 'string') return NextResponse.json({ error: "Invalid Name" }, { status: 400 });
+        if (!location || typeof location !== 'string') return NextResponse.json({ error: "Invalid Location" }, { status: 400 });
+        if (!priceRange || typeof priceRange !== 'string') return NextResponse.json({ error: "Invalid Price Range" }, { status: 400 });
+
+        // Cuisine Validation
+        if (!cuisine) return NextResponse.json({ error: "Missing Cuisine" }, { status: 400 });
+
         const id = uuidv4();
 
         await db.insert(restaurants).values({
-            ...body,
             id,
+            name,
+            description: description || "",
+            cuisine: Array.isArray(cuisine) ? cuisine : [cuisine], // Ensure array if schema requires it, or logic handles it
+            priceRange,
+            location,
+            imageUrl: imageUrl || "/placeholder.jpg",
+            rating: 0, // Default rating
+            reviews: 0,
+            isPopular: !!isPopular,
+            isTouristFavorite: !!isTouristFavorite,
+            isVegetarianFriendly: !!isVegetarianFriendly,
+            lat: lat || null,
+            lng: lng || null,
+            websiteUrl: websiteUrl || null,
+            menuUrl: menuUrl || null,
+            phone: phone || null,
+            openingHours: openingHours || null,
+            features: features || [],
             createdAt: new Date(),
             updatedAt: new Date(),
         });

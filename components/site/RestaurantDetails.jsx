@@ -10,14 +10,12 @@ import {
     Heart,
     Share2,
     ChevronLeft,
-    Calendar,
-    Users,
     UtensilsCrossed,
-    Info,
     Phone,
     Mail,
     PenLine,
-    ArrowRight
+    ArrowRight,
+    Users
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -42,6 +40,9 @@ import { reviews, travellerPhotos, restaurants } from "@/lib/dummy-data";
 
 export function RestaurantDetails({ restaurant }) {
     const [isReviewOpen, setIsReviewOpen] = useState(false);
+    const [selectedRating, setSelectedRating] = useState(0);
+    const [reviewTitle, setReviewTitle] = useState("");
+    const [reviewContent, setReviewContent] = useState("");
     const [activeImage, setActiveImage] = useState(null);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
@@ -441,21 +442,51 @@ export function RestaurantDetails({ restaurant }) {
                                         <Label htmlFor="rating">Rating</Label>
                                         <div className="flex gap-1 text-yellow-400">
                                             {[1, 2, 3, 4, 5].map((star) => (
-                                                <Star key={star} size={24} fill="currentColor" onClick={() => { }} className="cursor-pointer hover:scale-110 transition-transform" />
+                                                <Star
+                                                    key={star}
+                                                    size={24}
+                                                    fill={star <= selectedRating ? "currentColor" : "none"}
+                                                    onClick={() => setSelectedRating(star)}
+                                                    className="cursor-pointer hover:scale-110 transition-transform"
+                                                />
                                             ))}
                                         </div>
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="title">Title</Label>
-                                        <Input id="title" placeholder="Summarize your visit" />
+                                        <Input
+                                            id="title"
+                                            placeholder="Summarize your visit"
+                                            value={reviewTitle}
+                                            onChange={(e) => setReviewTitle(e.target.value)}
+                                        />
                                     </div>
                                     <div className="grid gap-2">
                                         <Label htmlFor="review">Review</Label>
-                                        <Textarea id="review" placeholder="Tell us more about the food, service, and atmosphere..." />
+                                        <Textarea
+                                            id="review"
+                                            placeholder="Tell us more about the food, service, and atmosphere..."
+                                            value={reviewContent}
+                                            onChange={(e) => setReviewContent(e.target.value)}
+                                        />
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button onClick={() => setIsReviewOpen(false)}>Submit Review</Button>
+                                    <Button onClick={() => {
+                                        const payload = {
+                                            restaurantId: restaurant.id,
+                                            rating: selectedRating,
+                                            title: reviewTitle,
+                                            content: reviewContent,
+                                            date: new Date().toISOString()
+                                        };
+                                        console.log("Submitting Review Payload:", payload);
+                                        // TODO: Send payload to API
+                                        setIsReviewOpen(false);
+                                        setSelectedRating(0);
+                                        setReviewTitle("");
+                                        setReviewContent("");
+                                    }}>Submit Review</Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
@@ -593,6 +624,6 @@ export function RestaurantDetails({ restaurant }) {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

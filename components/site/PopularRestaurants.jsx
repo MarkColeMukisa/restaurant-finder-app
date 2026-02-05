@@ -86,7 +86,7 @@ export function PopularRestaurants() {
                                         <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2 leading-tight group-hover:text-primary transition-colors tracking-tight">{restaurant.name}</h3>
 
                                         <p className="text-foreground/50 text-sm leading-relaxed font-medium italic opacity-80">
-                                            "{restaurant.description.substring(0, 85)}..."
+                                            "{(restaurant.description || "No description available").substring(0, 85)}..."
                                         </p>
 
                                         <div className="mt-auto pt-6 border-t border-slate-100/60">
@@ -97,7 +97,9 @@ export function PopularRestaurants() {
                                                 </div>
                                                 <div className="flex flex-col items-end">
                                                     <span className="text-[9px] uppercase font-black text-foreground/20 tracking-widest mb-1">Cuisine Style</span>
-                                                    <span className="text-sm font-bold text-foreground/70 tracking-tight leading-none">{restaurant.cuisine[0]}</span>
+                                                    <span className="text-sm font-bold text-foreground/70 tracking-tight leading-none">
+                                                        {(restaurant.cuisine && restaurant.cuisine.length > 0) ? restaurant.cuisine[0] : "Unknown"}
+                                                    </span>
                                                 </div>
                                             </div>
                                             <div className="flex items-center justify-center gap-2 py-3 bg-slate-50 rounded-xl group/btn transition-all hover:bg-primary/5">

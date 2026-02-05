@@ -37,6 +37,16 @@ export async function PATCH(req) {
         const body = await req.json();
         const { id, status } = body;
 
+        // Validation
+        if (!id || typeof id !== 'string') {
+            return NextResponse.json({ error: "Invalid input: ID is required" }, { status: 400 });
+        }
+
+        const allowedStatuses = ["read", "unread"];
+        if (!status || !allowedStatuses.includes(status)) {
+            return NextResponse.json({ error: "Invalid input: Status must be 'read' or 'unread'" }, { status: 400 });
+        }
+
         await db.update(inquiries)
             .set({ status })
             .where(eq(inquiries.id, id));

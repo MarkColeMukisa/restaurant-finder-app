@@ -38,6 +38,31 @@ import { Label } from "@/components/ui/label";
 import { restaurants, cuisines, priceRanges } from "@/lib/dummy-data";
 import Link from "next/link";
 
+function getPriceTierFromRange(range) {
+    if (!range) return "$";
+    // Extract numbers from string like "$15 - $30"
+    const matches = range.match(/\d+/g);
+    if (!matches || matches.length === 0) {
+        // Fallback for simple "$$" strings if any exist
+        return range.length > 4 ? "$$$$" : range;
+    }
+
+    // Calculate average price
+    const avg = matches.reduce((a, b) => parseInt(a) + parseInt(b), 0) / matches.length;
+
+    if (avg < 30) return "$";
+    if (avg < 60) return "$$";
+    if (avg < 100) return "$$$";
+    return "$$$$";
+}
+
+const PRICE_RANKS = {
+    "$": 1,
+    "$$": 2,
+    "$$$": 3,
+    "$$$$": 4
+};
+
 export function RestaurantsExplorer() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedCuisines, setSelectedCuisines] = useState([]);
@@ -59,7 +84,8 @@ export function RestaurantsExplorer() {
     const priceCounts = useMemo(() => {
         const counts = {};
         restaurants.forEach(r => {
-            counts[r.priceRange] = (counts[r.priceRange] || 0) + 1;
+            const tier = getPriceTierFromRange(r.priceRange);
+            counts[tier] = (counts[tier] || 0) + 1;
         });
         return counts;
     }, []);
@@ -85,13 +111,20 @@ export function RestaurantsExplorer() {
                     r.description.toLowerCase().includes(searchQuery.toLowerCase());
                 const matchesCuisine = selectedCuisines.length === 0 ||
                     r.cuisine.some(c => selectedCuisines.includes(c));
-                const matchesPrice = selectedPrices.length === 0 || selectedPrices.includes(r.priceRange);
+
+                const tier = getPriceTierFromRange(r.priceRange);
+                const matchesPrice = selectedPrices.length === 0 || selectedPrices.includes(tier);
+
                 return matchesSearch && matchesCuisine && matchesPrice;
             })
             .sort((a, b) => {
                 if (sortBy === "Rating") return b.rating - a.rating;
-                if (sortBy === "Price (Low-High)") return a.priceRange.length - b.priceRange.length;
-                if (sortBy === "Price (High-Low)") return b.priceRange.length - a.priceRange.length;
+
+                const rankA = PRICE_RANKS[getPriceTierFromRange(a.priceRange)] || 0;
+                const rankB = PRICE_RANKS[getPriceTierFromRange(b.priceRange)] || 0;
+
+                if (sortBy === "Price (Low-High)") return rankA - rankB;
+                if (sortBy === "Price (High-Low)") return rankB - rankA;
                 return 0;
             });
     }, [searchQuery, selectedCuisines, selectedPrices, sortBy]);

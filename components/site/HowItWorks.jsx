@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, CalendarCheck, UtensilsCrossed } from "lucide-react";
+import { Search, CalendarCheck, Globe2, Filter } from "lucide-react";
 
 const steps = [
     {
@@ -31,8 +31,7 @@ const steps = [
     }
 ];
 
-// Helper to keep Globe2 and Filter imports locally if global ones fail
-import { Globe2, Filter } from "lucide-react";
+
 
 export function HowItWorks() {
     return (
