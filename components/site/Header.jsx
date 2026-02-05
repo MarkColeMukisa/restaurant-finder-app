@@ -94,10 +94,10 @@ export function Header() {
                     ))}
                 </div>
 
-                {/* Actions */}
-                <div className="hidden lg:flex items-center gap-4">
+                {/* Actions & Mobile Trigger */}
+                <div className="flex items-center gap-4">
                     {isPending ? (
-                        <div className="h-10 w-24 bg-slate-100 animate-pulse rounded-xl" />
+                        <div className="h-10 w-24 bg-slate-100 animate-pulse rounded-xl hidden lg:block" />
                     ) : session ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -112,7 +112,7 @@ export function Header() {
                                         <p className="text-xs font-bold text-foreground leading-none">{session.user.name}</p>
                                         <p className="text-[10px] text-foreground/40 font-medium">Verified Finder</p>
                                     </div>
-                                    <ChevronDown size={14} className="text-foreground/20" />
+                                    <ChevronDown size={14} className="text-foreground/20 hidden xl:block" />
                                 </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-slate-200 bg-white shadow-2xl shadow-slate-200/50 opacity-100 z-[100]">
@@ -155,7 +155,7 @@ export function Header() {
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
-                        <>
+                        <div className="hidden lg:flex items-center gap-4">
                             <Button
                                 variant="ghost"
                                 className="text-[15px] font-semibold text-foreground/60 hover:text-foreground rounded-full px-6"
@@ -169,111 +169,76 @@ export function Header() {
                             >
                                 Log in
                             </Button>
-                        </>
-                    )}
-                </div>
-
-                {/* Mobile Menu Sheet */}
-                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                    <SheetTrigger asChild>
-                        <button
-                            className="lg:hidden p-2 text-foreground"
-                            aria-label="Open menu"
-                        >
-                            <Menu size={28} />
-                        </button>
-                    </SheetTrigger>
-                    <SheetContent side="right" className="w-[300px] flex flex-col p-6 h-full">
-                        <SheetHeader className="text-left mb-6 shrink-0">
-                            <div className="flex items-center gap-2">
-                                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-white">
-                                    <Utensils size={16} />
-                                </div>
-                                <SheetTitle className="text-lg font-bold">DineDiscover</SheetTitle>
-                            </div>
-                            <SheetDescription className="text-xs text-muted-foreground">
-                                Explore the best restaurants near you.
-                            </SheetDescription>
-                        </SheetHeader>
-
-                        {/* Navigation Links */}
-                        <div className="flex-1 overflow-y-auto -mx-6 px-6 flex flex-col gap-6">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    className="text-lg font-semibold text-foreground hover:text-primary transition-colors flex items-center justify-between group"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                >
-                                    {link.name}
-                                    <div className="h-1.5 w-1.5 rounded-full bg-slate-200 group-hover:bg-primary transition-colors" />
-                                </Link>
-                            ))}
                         </div>
+                    )}
 
-                        {/* Footer: Auth/Profile */}
-                        <div className="mt-auto pt-8 border-t border-slate-100 shrink-0">
-                            {session ? (
-                                <div className="space-y-4">
-                                    {session.user.role === "admin" && (
-                                        <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
-                                            <Button className="w-full font-bold bg-blue-600 hover:bg-blue-700 text-white h-12 rounded-xl shadow-md border-none mb-0">
-                                                <Shield size={18} className="mr-2" />
-                                                Admin Dashboard
-                                            </Button>
-                                        </Link>
-                                    )}
-                                    <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                                        <div className="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-slate-200 group">
-                                            <Avatar className="h-10 w-10 border border-white shadow-sm">
-                                                <AvatarImage src={session.user.image} />
-                                                <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                                                    {session.user.name?.charAt(0)}
-                                                </AvatarFallback>
-                                            </Avatar>
-                                            <div className="overflow-hidden">
-                                                <p className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">{session.user.name}</p>
-                                                <p className="text-[10px] text-muted-foreground truncate">{session.user.email}</p>
-                                            </div>
-                                            <ChevronRight className="ml-auto text-muted-foreground h-4 w-4 group-hover:text-primary transition-colors" />
-                                        </div>
-                                    </Link>
-                                    <Button
-                                        className="w-full font-bold bg-red-600 hover:bg-red-700 text-white h-12 rounded-xl shadow-md border-none"
-                                        onClick={() => {
-                                            logout();
-                                            setIsMobileMenuOpen(false);
-                                        }}
-                                    >
-                                        Sign Out
-                                    </Button>
+                    {/* Mobile Menu Sheet */}
+                    <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                        <SheetTrigger asChild>
+                            <button
+                                className="lg:hidden p-2 text-foreground"
+                                aria-label="Open menu"
+                            >
+                                <Menu size={28} />
+                            </button>
+                        </SheetTrigger>
+                        <SheetContent side="right" className="w-[300px] flex flex-col p-6 h-full">
+                            <SheetHeader className="text-left mb-6 shrink-0">
+                                <div className="flex items-center gap-2">
+                                    <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                                        <Utensils size={16} />
+                                    </div>
+                                    <SheetTitle className="text-lg font-bold">DineDiscover</SheetTitle>
                                 </div>
-                            ) : (
-                                <div className="flex flex-col gap-3">
-                                    <Button
-                                        className="w-full bg-[#0d0c22] rounded-xl h-12 font-bold"
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            openAuth("login");
-                                        }}
+                                <SheetDescription className="text-xs text-muted-foreground">
+                                    Explore the best restaurants near you.
+                                </SheetDescription>
+                            </SheetHeader>
+
+                            {/* Navigation Links */}
+                            <div className="flex-1 overflow-y-auto -mx-6 px-6 flex flex-col gap-6">
+                                {navLinks.map((link) => (
+                                    <Link
+                                        key={link.name}
+                                        href={link.href}
+                                        className="text-lg font-semibold text-foreground hover:text-primary transition-colors flex items-center justify-between group"
+                                        onClick={() => setIsMobileMenuOpen(false)}
                                     >
-                                        Log in
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full rounded-xl h-12 font-bold"
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            openAuth("signup");
-                                        }}
-                                    >
-                                        Sign Up
-                                    </Button>
+                                        {link.name}
+                                        <div className="h-1.5 w-1.5 rounded-full bg-slate-200 group-hover:bg-primary transition-colors" />
+                                    </Link>
+                                ))}
+                            </div>
+
+                            {/* Footer: Auth Only (Logged Out) */}
+                            {!session && (
+                                <div className="mt-auto pt-8 border-t border-slate-100 shrink-0">
+                                    <div className="flex flex-col gap-3">
+                                        <Button
+                                            className="w-full bg-[#0d0c22] rounded-xl h-12 font-bold"
+                                            onClick={() => {
+                                                setIsMobileMenuOpen(false);
+                                                openAuth("login");
+                                            }}
+                                        >
+                                            Log in
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full rounded-xl h-12 font-bold"
+                                            onClick={() => {
+                                                setIsMobileMenuOpen(false);
+                                                openAuth("signup");
+                                            }}
+                                        >
+                                            Sign Up
+                                        </Button>
+                                    </div>
                                 </div>
                             )}
-                        </div>
-                    </SheetContent>
-                </Sheet>
+                        </SheetContent>
+                    </Sheet>
+                </div>
             </div>
 
             <AuthDialog open={isAuthOpen} onOpenChange={setIsAuthOpen} initialView={authView} />

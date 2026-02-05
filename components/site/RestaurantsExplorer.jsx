@@ -14,6 +14,14 @@ import {
     X,
     ArrowRight
 } from "lucide-react";
+import {
+    Sheet,
+    SheetContent,
+    SheetDescription,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,6 +43,7 @@ export function RestaurantsExplorer() {
     const [selectedCuisines, setSelectedCuisines] = useState([]);
     const [selectedPrices, setSelectedPrices] = useState([]);
     const [sortBy, setSortBy] = useState("Rating");
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     // Calculate counts for each filter
     const cuisineCounts = useMemo(() => {
@@ -98,9 +107,98 @@ export function RestaurantsExplorer() {
                     </h1>
                 </div>
 
+                {/* Mobile Filter Trigger */}
+                <div className="lg:hidden mb-8">
+                    <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                        <SheetTrigger asChild>
+                            <Button className="w-full bg-white text-foreground border border-slate-200 shadow-sm hover:bg-slate-50 h-12 rounded-xl font-bold flex items-center justify-between px-6">
+                                <span className="flex items-center gap-2">
+                                    <Filter size={16} className="text-primary" />
+                                    Filters
+                                </span>
+                                {(selectedCuisines.length > 0 || selectedPrices.length > 0) && (
+                                    <Badge className="bg-primary text-white hover:bg-primary border-none h-6 w-6 rounded-full p-0 flex items-center justify-center text-[10px]">
+                                        {selectedCuisines.length + selectedPrices.length}
+                                    </Badge>
+                                )}
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="w-[300px] sm:w-[400px] overflow-y-auto">
+                            <SheetHeader className="text-left mb-6">
+                                <SheetTitle className="text-lg font-bold">Filters</SheetTitle>
+                                <SheetDescription>Refine your dining search.</SheetDescription>
+                            </SheetHeader>
+
+                            <div className="space-y-8 pb-8 pl-4">
+                                {/* Search removed as per request */}
+
+                                {/* Cuisine Filter in Sheet */}
+                                <div>
+                                    <h4 className="text-base font-bold text-foreground mb-4">Cuisine Style</h4>
+                                    <div className="space-y-4">
+                                        {cuisines.filter(c => c !== "All").map(c => (
+                                            <div key={c} className="flex items-center justify-between group cursor-pointer" onClick={() => toggleCuisine(c)}>
+                                                <div className="flex items-center space-x-4">
+                                                    <Checkbox
+                                                        id={`mobile-cuisine-${c}`}
+                                                        checked={selectedCuisines.includes(c)}
+                                                        onCheckedChange={() => toggleCuisine(c)}
+                                                        className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                                    />
+                                                    <Label
+                                                        htmlFor={`mobile-cuisine-${c}`}
+                                                        className={`text-[13px] font-medium cursor-pointer transition-colors ${selectedCuisines.includes(c) ? "text-primary" : "text-foreground/70"}`}
+                                                    >
+                                                        {c}
+                                                    </Label>
+                                                </div>
+                                                <span className="text-[12px] font-medium text-foreground/25 tabular-nums">
+                                                    {cuisineCounts[c] || 0}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Price Filter in Sheet */}
+                                <div>
+                                    <h4 className="text-base font-bold text-foreground mb-4">Price Level</h4>
+                                    <div className="space-y-4">
+                                        {priceRanges.filter(p => p !== "All").map(p => (
+                                            <div key={p} className="flex items-center justify-between group cursor-pointer" onClick={() => togglePrice(p)}>
+                                                <div className="flex items-center space-x-4">
+                                                    <Checkbox
+                                                        id={`mobile-price-${p}`}
+                                                        checked={selectedPrices.includes(p)}
+                                                        onCheckedChange={() => togglePrice(p)}
+                                                        className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                                    />
+                                                    <Label
+                                                        htmlFor={`mobile-price-${p}`}
+                                                        className={`text-[13px] font-medium cursor-pointer transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
+                                                    >
+                                                        {p === "$" ? "Budget ($)" : p === "$$" ? "Moderate ($$)" : p === "$$$" ? "Premium ($$$)" : "Luxury ($$$$)"}
+                                                    </Label>
+                                                </div>
+                                                <span className="text-[12px] font-medium text-foreground/25 tabular-nums">
+                                                    {priceCounts[p] || 0}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <Button className="w-full bg-primary font-bold rounded-xl" onClick={() => setIsFilterOpen(false)}>
+                                    Show Results
+                                </Button>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+
                 <div className="flex flex-col lg:flex-row gap-12">
                     {/* Sidebar Filters - Sticky on Desktop */}
-                    <aside className="lg:w-1/4">
+                    <aside className="hidden lg:block lg:w-1/4">
                         <div className="space-y-10">
                             {/* Search (Mobile/Tablet view helper - hides on LG if top bar is used, but sidebar search is also clean) */}
                             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:hidden">
