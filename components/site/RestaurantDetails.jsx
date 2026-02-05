@@ -512,21 +512,27 @@ export function RestaurantDetails({ restaurant }) {
                                     </div>
                                 </div>
                                 <DialogFooter>
-                                    <Button onClick={() => {
-                                        const payload = {
-                                            restaurantId: restaurant.id,
-                                            rating: selectedRating,
-                                            title: reviewTitle,
-                                            content: reviewContent,
-                                            date: new Date().toISOString()
-                                        };
-                                        console.log("Submitting Review Payload:", payload);
-                                        // TODO: Send payload to API
-                                        setIsReviewOpen(false);
-                                        setSelectedRating(0);
-                                        setReviewTitle("");
-                                        setReviewContent("");
-                                    }}>Submit Review</Button>
+                                    <Button
+                                        disabled={selectedRating === 0 || !reviewTitle.trim() || !reviewContent.trim()}
+                                        onClick={() => {
+                                            if (selectedRating === 0 || !reviewTitle.trim() || !reviewContent.trim()) {
+                                                return;
+                                            }
+
+                                            const payload = {
+                                                restaurantId: restaurant.id,
+                                                rating: selectedRating,
+                                                title: reviewTitle,
+                                                content: reviewContent,
+                                                date: new Date().toISOString()
+                                            };
+                                            console.log("Submitting Review Payload:", payload);
+                                            // TODO: Send payload to API
+                                            setIsReviewOpen(false);
+                                            setSelectedRating(0);
+                                            setReviewTitle("");
+                                            setReviewContent("");
+                                        }}>Submit Review</Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
