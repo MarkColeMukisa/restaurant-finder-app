@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Utensils, Menu, X, ChevronDown, User, LogOut, Heart, LayoutDashboard, Shield } from "lucide-react";
+import { Utensils, Menu, X, ChevronDown, User, LogOut, Heart, LayoutDashboard, Shield, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,6 +24,16 @@ const navLinks = [
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
 ];
+
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+    SheetFooter,
+    SheetDescription
+} from "@/components/ui/sheet";
 
 export function Header() {
     const { data: session, isPending } = authClient.useSession();
@@ -163,68 +173,108 @@ export function Header() {
                     )}
                 </div>
 
-                {/* Mobile Menu Button */}
-                <button
-                    className="lg:hidden p-2 text-foreground"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                >
-                    {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
-            </div>
+                {/* Mobile Menu Sheet */}
+                <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+                    <SheetTrigger asChild>
+                        <button
+                            className="lg:hidden p-2 text-foreground"
+                            aria-label="Open menu"
+                        >
+                            <Menu size={28} />
+                        </button>
+                    </SheetTrigger>
+                    <SheetContent side="right" className="w-[300px] flex flex-col p-6 h-full">
+                        <SheetHeader className="text-left mb-6 shrink-0">
+                            <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                                    <Utensils size={16} />
+                                </div>
+                                <SheetTitle className="text-lg font-bold">DineDiscover</SheetTitle>
+                            </div>
+                            <SheetDescription className="text-xs text-muted-foreground">
+                                Explore the best restaurants near you.
+                            </SheetDescription>
+                        </SheetHeader>
 
-            {/* Mobile Menu Overlay */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, x: "100%" }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: "100%" }}
-                        className="fixed inset-0 bg-white z-[60] pt-24 px-6 lg:hidden"
-                    >
-                        <div className="flex flex-col gap-8">
+                        {/* Navigation Links */}
+                        <div className="flex-1 overflow-y-auto -mx-6 px-6 flex flex-col gap-6">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-2xl font-bold text-foreground"
+                                    className="text-lg font-semibold text-foreground hover:text-primary transition-colors flex items-center justify-between group"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
                                     {link.name}
+                                    <div className="h-1.5 w-1.5 rounded-full bg-slate-200 group-hover:bg-primary transition-colors" />
                                 </Link>
                             ))}
-                            <div className="pt-8 flex flex-col gap-4 border-t border-slate-100">
-                                {session ? (
-                                    <Button className="w-full bg-red-500 hover:bg-red-600 text-white rounded-full h-14 font-bold text-lg" onClick={logout}>
+                        </div>
+
+                        {/* Footer: Auth/Profile */}
+                        <div className="mt-auto pt-8 border-t border-slate-100 shrink-0">
+                            {session ? (
+                                <div className="space-y-4">
+                                    {session.user.role === "admin" && (
+                                        <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                                            <Button className="w-full font-bold bg-blue-600 hover:bg-blue-700 text-white h-12 rounded-xl shadow-md border-none mb-0">
+                                                <Shield size={18} className="mr-2" />
+                                                Admin Dashboard
+                                            </Button>
+                                        </Link>
+                                    )}
+                                    <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+                                        <div className="flex items-center gap-3 p-3 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer border border-transparent hover:border-slate-200 group">
+                                            <Avatar className="h-10 w-10 border border-white shadow-sm">
+                                                <AvatarImage src={session.user.image} />
+                                                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                                                    {session.user.name?.charAt(0)}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className="overflow-hidden">
+                                                <p className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">{session.user.name}</p>
+                                                <p className="text-[10px] text-muted-foreground truncate">{session.user.email}</p>
+                                            </div>
+                                            <ChevronRight className="ml-auto text-muted-foreground h-4 w-4 group-hover:text-primary transition-colors" />
+                                        </div>
+                                    </Link>
+                                    <Button
+                                        className="w-full font-bold bg-red-600 hover:bg-red-700 text-white h-12 rounded-xl shadow-md border-none"
+                                        onClick={() => {
+                                            logout();
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                    >
                                         Sign Out
                                     </Button>
-                                ) : (
-                                    <>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full rounded-full h-14 font-bold text-lg"
-                                            onClick={() => {
-                                                setIsMobileMenuOpen(false);
-                                                openAuth("signup");
-                                            }}
-                                        >
-                                            Sign Up
-                                        </Button>
-                                        <Button
-                                            className="w-full bg-[#0d0c22] rounded-full h-14 font-bold text-lg"
-                                            onClick={() => {
-                                                setIsMobileMenuOpen(false);
-                                                openAuth("login");
-                                            }}
-                                        >
-                                            Log in
-                                        </Button>
-                                    </>
-                                )}
-                            </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-3">
+                                    <Button
+                                        className="w-full bg-[#0d0c22] rounded-xl h-12 font-bold"
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            openAuth("login");
+                                        }}
+                                    >
+                                        Log in
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full rounded-xl h-12 font-bold"
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            openAuth("signup");
+                                        }}
+                                    >
+                                        Sign Up
+                                    </Button>
+                                </div>
+                            )}
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </SheetContent>
+                </Sheet>
+            </div>
 
             <AuthDialog open={isAuthOpen} onOpenChange={setIsAuthOpen} initialView={authView} />
         </nav>

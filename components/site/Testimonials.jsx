@@ -25,12 +25,12 @@ export function Testimonials() {
     return (
         <section className="py-10 bg-white border-y border-slate-100 relative overflow-hidden">
             {/* Background institutional mark */}
-            <div className="absolute top-0 right-10 text-[600px] font-black text-slate-50 select-none leading-none pointer-events-none uppercase tracking-tighter">
+            <div className="absolute top-0 right-4 md:right-10 text-[300px] md:text-[600px] font-black text-slate-50 select-none leading-none pointer-events-none uppercase tracking-tighter">
                 D
             </div>
 
-            <div className="container mx-auto px-6 relative z-10">
-                <div className="flex flex-col lg:flex-row items-center gap-20">
+            <div className="container mx-auto px-6 relative z-10 py-10 md:py-0">
+                <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-24">
                     <div className="lg:w-1/3">
                         <span className="text-primary font-black text-[10px] uppercase tracking-[0.4em] mb-6 block">Global Commendations</span>
                         <h2 className="text-2xl md:text-4xl font-bold text-foreground tracking-tighter leading-none font-sans">
@@ -59,10 +59,10 @@ export function Testimonials() {
                         </div>
                     </div>
 
-                    <div className="lg:w-2/3 bg-slate-50 p-12 md:p-20 rounded-xl relative border border-slate-100 shadow-sm">
+                    <div className="lg:w-2/3 bg-slate-50 p-8 md:p-12 lg:p-20 rounded-xl relative border border-slate-100 shadow-sm w-full">
                         <Quote className="absolute top-10 right-10 text-primary/10 w-24 h-24" />
 
-                        <div className="relative h-[450px] md:h-[300px]">
+                        <div className="relative min-h-[500px] md:min-h-[300px]">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentIndex}

@@ -34,7 +34,7 @@ export function Footer() {
                         </div>
                     </div>
 
-                    <div className="lg:col-span-8 grid grid-cols-2 lg:grid-cols-4 gap-12">
+                    <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-12">
                         <div className="flex flex-col gap-8">
                             <h4 className="text-[10px] uppercase tracking-[0.4em] font-black text-foreground">Discovery</h4>
                             <ul className="flex flex-col gap-5">
@@ -49,23 +49,9 @@ export function Footer() {
                             </ul>
                         </div>
 
-                        <div className="flex flex-col gap-8">
-                            <h4 className="text-[10px] uppercase tracking-[0.4em] font-black text-foreground">Corporate</h4>
-                            <ul className="flex flex-col gap-5">
-                                {["About Professional", "Our Inspection", "Media Room", "Institutional"].map((item) => (
-                                    <li key={item}>
-                                        <Link href="#" className="text-[11px] font-black uppercase tracking-widest text-[#1A1A1A]/50 hover:text-primary transition-all flex items-center gap-2 group">
-                                            <ChevronRight size={10} className="text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0" />
-                                            {item}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div className="flex flex-col gap-8 lg:col-span-2">
+                        <div className="flex flex-col gap-8 md:col-span-2">
                             <h4 className="text-[10px] uppercase tracking-[0.4em] font-black text-foreground">Official Communications</h4>
-                            <div className="flex flex-col gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div className="bg-slate-50 p-6 rounded-lg border border-slate-100">
                                     <p className="text-[10px] font-black uppercase tracking-widest text-foreground/30 mb-4">Official Mailing</p>
                                     <Link href="mailto:official@dinediscover.com" className="text-sm font-black text-foreground hover:text-primary transition-all flex items-center gap-3">
