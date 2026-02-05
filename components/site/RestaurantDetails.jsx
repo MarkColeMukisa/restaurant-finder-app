@@ -224,7 +224,7 @@ export function RestaurantDetails({ restaurant }) {
                                         Opens in 0 min
                                     </span>
                                     <span className="text-foreground/20">|</span>
-                                    <button className="text-foreground/60 hover:text-primary transition-colors hover:underline underline-offset-4">See all hours</button>
+                                    <Button variant="link" className="p-0 h-auto text-foreground/60 hover:text-primary transition-colors hover:underline underline-offset-4 font-normal">See all hours</Button>
                                 </div>
 
                                 {/* Address */}
@@ -239,18 +239,28 @@ export function RestaurantDetails({ restaurant }) {
 
                                 {/* Action Buttons Grid */}
                                 <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-4">
-                                    <a href="#" className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group">
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => { }}
+                                        aria-label="Visit website"
+                                        className="h-auto p-0 hover:bg-transparent flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
+                                    >
                                         <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
                                             <Globe size={14} />
                                         </div>
                                         Website
-                                    </a>
-                                    <a href="#" className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group">
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        onClick={() => { }}
+                                        aria-label="View menu"
+                                        className="h-auto p-0 hover:bg-transparent flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
+                                    >
                                         <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
                                             <UtensilsCrossed size={14} />
                                         </div>
                                         Menu
-                                    </a>
+                                    </Button>
                                     <a href={`tel:+256700000000`} className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group">
                                         <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
                                             <Phone size={14} />

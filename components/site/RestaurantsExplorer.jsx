@@ -392,16 +392,17 @@ export function RestaurantsExplorer() {
                                 </span>
                             </div>
                             {(selectedCuisines.length > 0 || selectedPrices.length > 0 || searchQuery !== "") && (
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => {
                                         setSelectedCuisines([]);
                                         setSelectedPrices([]);
                                         setSearchQuery("");
                                     }}
-                                    className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/40 hover:text-primary transition-colors"
+                                    className="h-auto p-0 hover:bg-transparent flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/40 hover:text-primary transition-colors"
                                 >
                                     Clear Selection <X size={12} />
-                                </button>
+                                </Button>
                             )}
                         </div>
 
