@@ -1,12 +1,14 @@
-import Navbar from "@/components/client/Navbar";
-import Footer from "@/components/client/Footer";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
 
 export default function ClientLayout({ children }) {
     return (
-        <>
-            <Navbar />
-            {children}
+        <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1">
+                {children}
+            </main>
             <Footer />
-        </>
+        </div>
     );
 }

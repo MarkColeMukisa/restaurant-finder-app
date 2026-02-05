@@ -1,32 +1,28 @@
-import CallToAction from "@/components/client/CallToAction";
-import Categories from "@/components/client/Categories";
-import ExclusiveOffers from "@/components/client/ExclusiveOffers";
-import HeroSection from "@/components/client/Hero";
-import HowItWorks from "@/components/client/HowItWorks";
-import PopularRestaurants from "@/components/client/PopularRestaurants";
-import RestaurantsNearYou from "@/components/client/RestaurantsNearYou";
-import Testimonials from "@/components/client/Testimonials";
-import TopRelatedRestaurants from "@/components/client/TopRelatedRestaurants";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+import { Hero } from "@/components/site/Hero";
+import { Categories } from "@/components/site/Categories";
+import { RestaurantGrid } from "@/components/site/RestaurantGrid";
+import { PopularDestinations } from "@/components/site/PopularDestinations";
+import { PopularRestaurants } from "@/components/site/PopularRestaurants";
+import { Features } from "@/components/site/Features";
+import { HowItWorks } from "@/components/site/HowItWorks";
+import { Testimonials } from "@/components/site/Testimonials";
+import { CTA } from "@/components/site/CTA";
+
+export default function LandingPage() {
   return (
-
     <>
-
-      <HeroSection />
+      <Hero />
       <Categories />
+      <RestaurantGrid />
+      <PopularDestinations />
       <PopularRestaurants />
-      <RestaurantsNearYou />
-      <ExclusiveOffers />
-      <TopRelatedRestaurants />
+      <Features />
       <HowItWorks />
       <Testimonials />
-      <CallToAction />
-
-
-
+      <CTA />
     </>
   );
 }
