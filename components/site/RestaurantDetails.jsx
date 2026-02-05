@@ -330,7 +330,7 @@ export function RestaurantDetails({ restaurant }) {
                             </div>
                         </div>
 
-                        {/* Location Details */}
+                        {/* Location Details section */}
                         <div className="space-y-8">
                             <div className="flex items-center gap-3">
                                 <div className="h-8 w-1.5 bg-primary rounded-full" />
