@@ -257,19 +257,7 @@ export function RestaurantsExplorer() {
                     {/* Sidebar Filters - Sticky on Desktop */}
                     <aside className="hidden lg:block lg:w-1/4">
                         <div className="space-y-10">
-                            {/* Search (Mobile/Tablet view helper - hides on LG if top bar is used, but sidebar search is also clean) */}
-                            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:hidden">
-                                <h4 className="text-[11px] font-black uppercase tracking-widest text-foreground mb-4">Search</h4>
-                                <div className="relative">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/20" size={16} />
-                                    <Input
-                                        placeholder="Name or cuisine..."
-                                        className="pl-10 h-11 bg-slate-50 border-none rounded-xl text-[12px] font-bold"
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                </div>
-                            </div>
+
 
                             {/* Cuisine Filter - Multi-select Checkboxes */}
                             <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-100">

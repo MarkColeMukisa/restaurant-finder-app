@@ -147,7 +147,7 @@ export function RestaurantDetails({ restaurant }) {
                             {restaurant.images.slice(0, 3).map((img, idx) => (
                                 <button
                                     type="button"
-                                    key={idx}
+                                    key={img}
                                     onClick={() => setActiveImage(img)}
                                     aria-label={`View image ${idx + 1}`}
                                     aria-current={activeImage === img ? "true" : undefined}
@@ -239,40 +239,56 @@ export function RestaurantDetails({ restaurant }) {
 
                                 {/* Action Buttons Grid */}
                                 <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-4">
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => { }}
-                                        aria-label="Visit website"
-                                        className="h-auto p-0 hover:bg-transparent flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
-                                    >
-                                        <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
-                                            <Globe size={14} />
-                                        </div>
-                                        Website
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        onClick={() => { }}
-                                        aria-label="View menu"
-                                        className="h-auto p-0 hover:bg-transparent flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
-                                    >
-                                        <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
-                                            <UtensilsCrossed size={14} />
-                                        </div>
-                                        Menu
-                                    </Button>
-                                    <a href={`tel:+256700000000`} className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group">
-                                        <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
-                                            <Phone size={14} />
-                                        </div>
-                                        Call
-                                    </a>
-                                    <a href={`mailto:info@${restaurant.name.toLowerCase().replace(/\s/g, "")}.com`} className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group">
-                                        <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
-                                            <Mail size={14} />
-                                        </div>
-                                        Email
-                                    </a>
+                                    {restaurant.websiteUrl && (
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => window.open(restaurant.websiteUrl, "_blank", "noopener,noreferrer")}
+                                            aria-label={`Visit ${restaurant.name} website`}
+                                            className="h-auto p-0 hover:bg-transparent flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
+                                        >
+                                            <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
+                                                <Globe size={14} />
+                                            </div>
+                                            Website
+                                        </Button>
+                                    )}
+                                    {restaurant.menuUrl && (
+                                        <Button
+                                            variant="ghost"
+                                            onClick={() => window.open(restaurant.menuUrl, "_blank", "noopener,noreferrer")}
+                                            aria-label={`View menu for ${restaurant.name}`}
+                                            className="h-auto p-0 hover:bg-transparent flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
+                                        >
+                                            <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
+                                                <UtensilsCrossed size={14} />
+                                            </div>
+                                            Menu
+                                        </Button>
+                                    )}
+                                    {restaurant.phoneNumber && (
+                                        <a
+                                            href={`tel:${restaurant.phoneNumber}`}
+                                            aria-label={`Call ${restaurant.name}`}
+                                            className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
+                                        >
+                                            <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
+                                                <Phone size={14} />
+                                            </div>
+                                            Call
+                                        </a>
+                                    )}
+                                    {restaurant.email && (
+                                        <a
+                                            href={`mailto:${restaurant.email}`}
+                                            aria-label={`Email ${restaurant.name}`}
+                                            className="flex items-center gap-2.5 text-sm font-bold text-foreground hover:text-primary transition-colors group"
+                                        >
+                                            <div className="h-8 w-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-foreground/60 group-hover:text-primary group-hover:border-primary/30 transition-all">
+                                                <Mail size={14} />
+                                            </div>
+                                            Email
+                                        </a>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -305,8 +321,8 @@ export function RestaurantDetails({ restaurant }) {
                                     { icon: <Users size={20} />, label: "Good for Groups" },
                                     { icon: <Star size={20} />, label: "Reservations" },
                                     { icon: <ShieldCheck size={20} />, label: "Clean & Safe" },
-                                ].map((feature, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 text-foreground/80 font-medium p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-200 transition-colors">
+                                ].map((feature) => (
+                                    <div key={feature.label} className="flex items-center gap-4 text-foreground/80 font-medium p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 hover:border-slate-200 transition-colors">
                                         <div className="text-primary/60">{feature.icon}</div>
                                         <span>{feature.label}</span>
                                     </div>
