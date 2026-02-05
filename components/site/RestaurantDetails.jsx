@@ -79,7 +79,7 @@ export function RestaurantDetails({ restaurant }) {
                             {restaurant.name}
                         </h1>
                         <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.3em] text-primary">
-                            <span>{restaurant.cuisine[0]}</span>
+                            <span>{(Array.isArray(restaurant.cuisine) && restaurant.cuisine.length > 0) ? restaurant.cuisine[0] : "Cuisine"}</span>
                             <span className="text-foreground/10">•</span>
                             <span className="text-foreground/40">{restaurant.isTouristFavorite ? "Elite Selection" : "Local Gem"}</span>
                         </div>
@@ -103,7 +103,7 @@ export function RestaurantDetails({ restaurant }) {
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 leading-none mb-1">Languages</span>
-                                <span className="text-[11px] font-bold uppercase tracking-widest text-foreground/20">{restaurant.languages.join(", ")}</span>
+                                <span className="text-[11px] font-bold uppercase tracking-widest text-foreground/20">{(Array.isArray(restaurant.languages) ? restaurant.languages.join(", ") : "English")}</span>
                             </div>
                         </div>
 
