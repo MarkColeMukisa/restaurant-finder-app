@@ -372,7 +372,7 @@ export function RestaurantDetails({ restaurant }) {
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">Phone Number</p>
-                                            <p className="font-bold text-foreground">+256 700 000 000</p>
+                                            <p className="font-bold text-foreground">{restaurant.phoneNumber || "Not available"}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
@@ -381,7 +381,7 @@ export function RestaurantDetails({ restaurant }) {
                                         </div>
                                         <div>
                                             <p className="text-[10px] font-black text-foreground/30 uppercase tracking-widest">Official Email</p>
-                                            <p className="font-bold text-foreground">info@{restaurant.name.toLowerCase().replace(/\s/g, "")}.com</p>
+                                            <p className="font-bold text-foreground">{restaurant.email || "Not available"}</p>
                                         </div>
                                     </div>
                                 </div>
