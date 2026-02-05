@@ -219,9 +219,9 @@ export function RestaurantDetails({ restaurant }) {
                             <div className="space-y-5">
                                 {/* Status & Hours Link */}
                                 <div className="flex items-center gap-3 text-[15px] font-medium">
-                                    <span className="text-green-600 font-bold flex items-center gap-2">
-                                        <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                                        Opens in 0 min
+                                    <span className="text-foreground/80 font-bold flex items-center gap-2">
+                                        <Clock size={16} className="text-primary" />
+                                        {restaurant.openHours}
                                     </span>
                                     <span className="text-foreground/20">|</span>
                                     <Button variant="link" className="p-0 h-auto text-foreground/60 hover:text-primary transition-colors hover:underline underline-offset-4 font-normal">See all hours</Button>
@@ -399,7 +399,7 @@ export function RestaurantDetails({ restaurant }) {
                                     <div className="space-y-6">
                                         <div className="flex justify-between items-center">
                                             <h3 className="text-lg font-bold text-foreground">Opening Hours</h3>
-                                            <span className="text-xs font-bold text-green-600 px-2 py-1 bg-green-50 rounded-lg">Open Now</span>
+                                            {/* <span className="text-xs font-bold text-green-600 px-2 py-1 bg-green-50 rounded-lg">Open Now</span> */}
                                         </div>
 
                                         <div className="space-y-3">
