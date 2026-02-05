@@ -170,17 +170,29 @@ export function RestaurantsExplorer() {
                                     <h4 className="text-base font-bold text-foreground mb-4">Cuisine Style</h4>
                                     <div className="space-y-4">
                                         {cuisines.filter(c => c !== "All").map(c => (
-                                            <div key={c} className="flex items-center justify-between group cursor-pointer" onClick={() => toggleCuisine(c)}>
-                                                <div className="flex items-center space-x-4">
+                                            <div
+                                                key={c}
+                                                role="button"
+                                                tabIndex={0}
+                                                className="flex items-center justify-between group cursor-pointer w-full text-left outline-none focus:ring-2 focus:ring-primary rounded-md p-1 -ml-1 border-none bg-transparent"
+                                                onClick={() => toggleCuisine(c)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" || e.key === " ") {
+                                                        e.preventDefault();
+                                                        toggleCuisine(c);
+                                                    }
+                                                }}
+                                            >
+                                                <div className="flex items-center space-x-4 pointer-events-none">
                                                     <Checkbox
                                                         id={`mobile-cuisine-${c}`}
                                                         checked={selectedCuisines.includes(c)}
-                                                        onCheckedChange={() => toggleCuisine(c)}
+                                                        tabIndex={-1}
                                                         className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                                     />
                                                     <Label
                                                         htmlFor={`mobile-cuisine-${c}`}
-                                                        className={`text-[13px] font-medium cursor-pointer transition-colors ${selectedCuisines.includes(c) ? "text-primary" : "text-foreground/70"}`}
+                                                        className={`text-[13px] font-medium transition-colors ${selectedCuisines.includes(c) ? "text-primary" : "text-foreground/70"}`}
                                                     >
                                                         {c}
                                                     </Label>
@@ -198,17 +210,29 @@ export function RestaurantsExplorer() {
                                     <h4 className="text-base font-bold text-foreground mb-4">Price Level</h4>
                                     <div className="space-y-4">
                                         {priceRanges.filter(p => p !== "All").map(p => (
-                                            <div key={p} className="flex items-center justify-between group cursor-pointer" onClick={() => togglePrice(p)}>
-                                                <div className="flex items-center space-x-4">
+                                            <div
+                                                key={p}
+                                                role="button"
+                                                tabIndex={0}
+                                                className="flex items-center justify-between group cursor-pointer w-full text-left outline-none focus:ring-2 focus:ring-primary rounded-md p-1 -ml-1 border-none bg-transparent"
+                                                onClick={() => togglePrice(p)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" || e.key === " ") {
+                                                        e.preventDefault();
+                                                        togglePrice(p);
+                                                    }
+                                                }}
+                                            >
+                                                <div className="flex items-center space-x-4 pointer-events-none">
                                                     <Checkbox
                                                         id={`mobile-price-${p}`}
                                                         checked={selectedPrices.includes(p)}
-                                                        onCheckedChange={() => togglePrice(p)}
+                                                        tabIndex={-1}
                                                         className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                                     />
                                                     <Label
                                                         htmlFor={`mobile-price-${p}`}
-                                                        className={`text-[13px] font-medium cursor-pointer transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
+                                                        className={`text-[13px] font-medium transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
                                                     >
                                                         {p === "$" ? "Budget ($)" : p === "$$" ? "Moderate ($$)" : p === "$$$" ? "Premium ($$$)" : "Luxury ($$$$)"}
                                                     </Label>
@@ -252,17 +276,29 @@ export function RestaurantsExplorer() {
                                 <h4 className="text-base font-bold text-foreground mb-6">Cuisine Style</h4>
                                 <div className="space-y-4">
                                     {cuisines.filter(c => c !== "All").map(c => (
-                                        <div key={c} className="flex items-center justify-between group cursor-pointer" onClick={() => toggleCuisine(c)}>
-                                            <div className="flex items-center space-x-4">
+                                        <div
+                                            key={c}
+                                            role="button"
+                                            tabIndex={0}
+                                            className="flex items-center justify-between group cursor-pointer w-full text-left outline-none focus:ring-2 focus:ring-primary rounded-md p-1 -ml-1 border-none bg-transparent"
+                                            onClick={() => toggleCuisine(c)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    e.preventDefault();
+                                                    toggleCuisine(c);
+                                                }
+                                            }}
+                                        >
+                                            <div className="flex items-center space-x-4 pointer-events-none">
                                                 <Checkbox
                                                     id={`cuisine-${c}`}
                                                     checked={selectedCuisines.includes(c)}
-                                                    onCheckedChange={() => toggleCuisine(c)}
+                                                    tabIndex={-1}
                                                     className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                                 />
                                                 <Label
                                                     htmlFor={`cuisine-${c}`}
-                                                    className={`text-[13px] font-medium cursor-pointer transition-colors ${selectedCuisines.includes(c) ? "text-primary" : "text-foreground/70"}`}
+                                                    className={`text-[13px] font-medium transition-colors ${selectedCuisines.includes(c) ? "text-primary" : "text-foreground/70"}`}
                                                 >
                                                     {c}
                                                 </Label>
@@ -280,17 +316,29 @@ export function RestaurantsExplorer() {
                                 <h4 className="text-base font-bold text-foreground mb-6">Price Level</h4>
                                 <div className="space-y-4">
                                     {priceRanges.filter(p => p !== "All").map(p => (
-                                        <div key={p} className="flex items-center justify-between group cursor-pointer" onClick={() => togglePrice(p)}>
-                                            <div className="flex items-center space-x-4">
+                                        <div
+                                            key={p}
+                                            role="button"
+                                            tabIndex={0}
+                                            className="flex items-center justify-between group cursor-pointer w-full text-left outline-none focus:ring-2 focus:ring-primary rounded-md p-1 -ml-1 border-none bg-transparent"
+                                            onClick={() => togglePrice(p)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    e.preventDefault();
+                                                    togglePrice(p);
+                                                }
+                                            }}
+                                        >
+                                            <div className="flex items-center space-x-4 pointer-events-none">
                                                 <Checkbox
                                                     id={`price-${p}`}
                                                     checked={selectedPrices.includes(p)}
-                                                    onCheckedChange={() => togglePrice(p)}
+                                                    tabIndex={-1}
                                                     className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
                                                 />
                                                 <Label
                                                     htmlFor={`price-${p}`}
-                                                    className={`text-[13px] font-medium cursor-pointer transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
+                                                    className={`text-[13px] font-medium transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
                                                 >
                                                     {p === "$" ? "Budget ($)" : p === "$$" ? "Moderate ($$)" : p === "$$$" ? "Premium ($$$)" : "Luxury ($$$$)"}
                                                 </Label>

@@ -145,21 +145,26 @@ export function RestaurantDetails({ restaurant }) {
                     {hasGallery && (
                         <div className="hidden md:flex flex-col gap-4 w-[120px] h-full">
                             {restaurant.images.slice(0, 3).map((img, idx) => (
-                                <div
+                                <button
+                                    type="button"
                                     key={idx}
                                     onClick={() => setActiveImage(img)}
-                                    className={`relative flex-1 rounded-2xl overflow-hidden cursor-pointer border-2 transition-all ${activeImage === img ? "border-primary ring-2 ring-primary/20" : "border-transparent opacity-70 hover:opacity-100"}`}
+                                    aria-label={`View image ${idx + 1}`}
+                                    aria-current={activeImage === img ? "true" : undefined}
+                                    className={`relative flex-1 rounded-2xl overflow-hidden cursor-pointer border-2 transition-all p-0 ${activeImage === img ? "border-primary ring-2 ring-primary/20" : "border-transparent opacity-70 hover:opacity-100"}`}
                                 >
                                     <img src={img} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
-                                </div>
+                                </button>
                             ))}
                             {restaurant.images.length > 3 && (
-                                <div
+                                <button
+                                    type="button"
                                     onClick={() => setIsGalleryOpen(true)}
-                                    className="relative flex-1 rounded-2xl overflow-hidden cursor-pointer border-2 border-transparent bg-slate-100 flex items-center justify-center text-primary font-bold text-xs uppercase tracking-widest hover:bg-primary hover:text-white transition-colors"
+                                    aria-label={`View ${restaurant.images.length - 3} more photos`}
+                                    className="relative flex-1 rounded-2xl overflow-hidden cursor-pointer border-2 border-transparent bg-slate-100 flex items-center justify-center text-primary font-bold text-xs uppercase tracking-widest hover:bg-primary hover:text-white transition-colors w-full p-0"
                                 >
                                     +{restaurant.images.length - 3}
-                                </div>
+                                </button>
                             )}
                         </div>
                     )}
@@ -177,13 +182,15 @@ export function RestaurantDetails({ restaurant }) {
                     </DialogHeader>
                     <div className="flex-1 overflow-y-auto p-6 pt-2 grid grid-cols-2 md:grid-cols-3 gap-4">
                         {restaurant.images?.map((img, idx) => (
-                            <div
+                            <button
+                                type="button"
                                 key={idx}
                                 onClick={() => {
                                     setActiveImage(img);
                                     setIsGalleryOpen(false);
                                 }}
-                                className="aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group relative"
+                                aria-label={`View gallery image ${idx + 1}`}
+                                className="aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group relative p-0 border-none outline-none focus:ring-2 focus:ring-primary w-full"
                             >
                                 <img
                                     src={img}
@@ -193,7 +200,7 @@ export function RestaurantDetails({ restaurant }) {
                                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <span className="text-white text-xs font-bold uppercase tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-md">View</span>
                                 </div>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 </DialogContent>
@@ -442,13 +449,20 @@ export function RestaurantDetails({ restaurant }) {
                                         <Label htmlFor="rating">Rating</Label>
                                         <div className="flex gap-1 text-yellow-400">
                                             {[1, 2, 3, 4, 5].map((star) => (
-                                                <Star
+                                                <button
                                                     key={star}
-                                                    size={24}
-                                                    fill={star <= selectedRating ? "currentColor" : "none"}
+                                                    type="button"
                                                     onClick={() => setSelectedRating(star)}
-                                                    className="cursor-pointer hover:scale-110 transition-transform"
-                                                />
+                                                    aria-label={`Set rating ${star} stars`}
+                                                    aria-pressed={star <= selectedRating}
+                                                    className="focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-0.5"
+                                                >
+                                                    <Star
+                                                        size={24}
+                                                        fill={star <= selectedRating ? "currentColor" : "none"}
+                                                        className="cursor-pointer hover:scale-110 transition-transform"
+                                                    />
+                                                </button>
                                             ))}
                                         </div>
                                     </div>
