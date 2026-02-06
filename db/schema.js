@@ -90,3 +90,15 @@ export const inquiries = pgTable("inquiries", {
     createdAt: timestamp("createdAt").notNull(),
 });
 
+export const reviews = pgTable("reviews", {
+    id: text("id").primaryKey(),
+    restaurantId: text("restaurantId").notNull().references(() => restaurants.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userName: text("userName"),
+    userImage: text("userImage"),
+    rating: integer("rating").notNull(),
+    title: text("title"),
+    content: text("content").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+

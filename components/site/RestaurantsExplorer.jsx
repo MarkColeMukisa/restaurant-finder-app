@@ -35,60 +35,151 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { restaurants, cuisines, priceRanges } from "@/lib/dummy-data";
 import Link from "next/link";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-function getPriceTierFromRange(range) {
-    if (!range) return "$";
-    // Extract numbers from string like "$15 - $30"
+function getAveragePrice(range) {
+    if (!range) return 0;
     const matches = range.match(/\d+/g);
-    if (!matches || matches.length === 0) {
-        // Fallback for simple "$$" strings if any exist
-        return range.length > 4 ? "$$$$" : range;
-    }
-
-    // Calculate average price
-    const avg = matches.reduce((a, b) => parseInt(a) + parseInt(b), 0) / matches.length;
-
-    if (avg < 30) return "$";
-    if (avg < 60) return "$$";
-    if (avg < 100) return "$$$";
-    return "$$$$";
+    if (!matches || matches.length === 0) return 0;
+    return matches.reduce((a, b) => parseInt(a) + parseInt(b), 0) / matches.length;
 }
 
-const PRICE_RANKS = {
-    "$": 1,
-    "$$": 2,
-    "$$$": 3,
-    "$$$$": 4
-};
+export function RestaurantsExplorer({ initialRestaurants = [] }) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    const initialSearch = searchParams.get("search") || "";
 
-export function RestaurantsExplorer() {
-    const [searchQuery, setSearchQuery] = useState("");
+    const [restaurants, setRestaurants] = useState(initialRestaurants);
+    const [hasMore, setHasMore] = useState(initialRestaurants.length >= 12);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState(initialSearch);
+
     const [selectedCuisines, setSelectedCuisines] = useState([]);
+
     const [selectedPrices, setSelectedPrices] = useState([]);
+    const [selectedDestinations, setSelectedDestinations] = useState([]);
     const [sortBy, setSortBy] = useState("Rating");
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    // Sync state with server-side updates (e.g. navigation)
+    React.useEffect(() => {
+        setRestaurants(initialRestaurants);
+        setHasMore(initialRestaurants.length >= 12);
+
+        // Sync Search
+        if (initialSearch !== searchQuery) {
+            setSearchQuery(initialSearch);
+        }
+
+        // Sync Cuisine param
+        const cuisineParam = searchParams.get("cuisine");
+        if (cuisineParam) {
+            setSelectedCuisines([cuisineParam]);
+        } else {
+            // Optional: clear if not present, or keep existing if logical (usually sync means replace)
+            // But we want to allow persistent navigation. 
+            // If we navigate to /restaurants, we expect clear filters usually?
+            // For now, let's only set if present to avoid clearing user's manual selection on shallow routing if any.
+            // Actually, if we navigate from Landing Page, it's a fresh mount or prop update.
+        }
+
+    }, [initialRestaurants, initialSearch, searchParams]);
+
+    // Update URL when search query changes (Debounced)
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchQuery !== initialSearch) {
+                const params = new URLSearchParams(searchParams);
+                if (searchQuery) {
+                    params.set("search", searchQuery);
+                } else {
+                    params.delete("search");
+                }
+                router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchQuery, router, pathname, searchParams, initialSearch]);
+
+    // Helper functions
+    const getCityFromAddress = (address) => {
+        if (!address) return "Other";
+        const parts = address.split(',').map(s => s.trim());
+        let city = parts.length > 1 ? parts[parts.length - 1] : parts[0];
+        if (/\d/.test(city) && parts.length > 1) {
+            city = parts[parts.length - 2];
+        }
+        return city.replace(/[\d-]/g, '').trim() || "Other";
+    };
 
     // Calculate counts for each filter
     const cuisineCounts = useMemo(() => {
         const counts = {};
         restaurants.forEach(r => {
-            r.cuisine.forEach(c => {
-                counts[c] = (counts[c] || 0) + 1;
-            });
+            if (Array.isArray(r.cuisine)) {
+                r.cuisine.forEach(c => {
+                    counts[c] = (counts[c] || 0) + 1;
+                });
+            }
         });
         return counts;
-    }, []);
+    }, [restaurants]);
 
     const priceCounts = useMemo(() => {
         const counts = {};
         restaurants.forEach(r => {
-            const tier = getPriceTierFromRange(r.priceRange);
-            counts[tier] = (counts[tier] || 0) + 1;
+            const range = r.priceRange || "Unknown";
+            counts[range] = (counts[range] || 0) + 1;
         });
         return counts;
-    }, []);
+    }, [restaurants]);
+
+    const destinationCounts = useMemo(() => {
+        const counts = {};
+        restaurants.forEach(r => {
+            const city = getCityFromAddress(r.address);
+            counts[city] = (counts[city] || 0) + 1;
+        });
+        return counts;
+    }, [restaurants]);
+
+    // Derive available options from data
+    const availableCuisines = useMemo(() => {
+        const unique = new Set(["All"]);
+        restaurants.forEach(r => {
+            if (Array.isArray(r.cuisine)) {
+                r.cuisine.forEach(c => unique.add(c));
+            }
+        });
+        return Array.from(unique).sort();
+    }, [restaurants]);
+
+    const availablePrices = useMemo(() => {
+        const unique = new Set(["All"]);
+        restaurants.forEach(r => {
+            if (r.priceRange) {
+                unique.add(r.priceRange);
+            }
+        });
+        return Array.from(unique).sort((a, b) => {
+            if (a === "All") return -1;
+            if (b === "All") return 1;
+            return getAveragePrice(a) - getAveragePrice(b);
+        });
+    }, [restaurants]);
+
+    const availableDestinations = useMemo(() => {
+        const unique = new Set();
+        restaurants.forEach(r => {
+            const city = getCityFromAddress(r.address);
+            if (city) unique.add(city);
+        });
+        return Array.from(unique).sort();
+    }, [restaurants]);
 
     // Selection Handlers
     const toggleCuisine = (cuisine) => {
@@ -103,31 +194,74 @@ export function RestaurantsExplorer() {
         );
     };
 
+    const toggleDestination = (destination) => {
+        setSelectedDestinations(prev =>
+            prev.includes(destination) ? prev.filter(d => d !== destination) : [...prev, destination]
+        );
+    };
+
+    const handleLoadMore = async () => {
+        console.log("Load More Clicked. Current count:", restaurants.length);
+        setIsLoadingMore(true);
+        try {
+            const offset = restaurants.length;
+            const queryParams = new URLSearchParams({
+                limit: "12",
+                offset: offset.toString(),
+                ...(searchQuery && { search: searchQuery })
+            });
+            console.log("Fetching:", `/api/restaurants/list?${queryParams.toString()}`);
+
+            const response = await fetch(`/api/restaurants/list?${queryParams.toString()}`);
+            if (response.ok) {
+                const newRestaurants = await response.json();
+                console.log("Fetched new restaurants:", newRestaurants.length);
+
+                if (newRestaurants.length < 12) {
+                    setHasMore(false);
+                }
+                setRestaurants(prev => [...prev, ...newRestaurants]);
+            } else {
+                console.error("Fetch failed:", response.status);
+            }
+        } catch (error) {
+            console.error("Failed to load more restaurants", error);
+        } finally {
+            setIsLoadingMore(false);
+        }
+    };
+
     // Filtering Logic
     const filteredRestaurants = useMemo(() => {
         return restaurants
             .filter(r => {
+                const restaurantCuisines = Array.isArray(r.cuisine) ? r.cuisine : [];
+                const restaurantCity = getCityFromAddress(r.address);
+
                 const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    r.description.toLowerCase().includes(searchQuery.toLowerCase());
+                    (r.description || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    (r.address || "").toLowerCase().includes(searchQuery.toLowerCase());
+
                 const matchesCuisine = selectedCuisines.length === 0 ||
-                    r.cuisine.some(c => selectedCuisines.includes(c));
+                    restaurantCuisines.some(c => selectedCuisines.includes(c));
 
-                const tier = getPriceTierFromRange(r.priceRange);
-                const matchesPrice = selectedPrices.length === 0 || selectedPrices.includes(tier);
+                const matchesPrice = selectedPrices.length === 0 || (r.priceRange && selectedPrices.includes(r.priceRange));
 
-                return matchesSearch && matchesCuisine && matchesPrice;
+                const matchesDestination = selectedDestinations.length === 0 || selectedDestinations.includes(restaurantCity);
+
+                return matchesSearch && matchesCuisine && matchesPrice && matchesDestination;
             })
             .sort((a, b) => {
                 if (sortBy === "Rating") return b.rating - a.rating;
 
-                const rankA = PRICE_RANKS[getPriceTierFromRange(a.priceRange)] || 0;
-                const rankB = PRICE_RANKS[getPriceTierFromRange(b.priceRange)] || 0;
+                const priceA = getAveragePrice(a.priceRange);
+                const priceB = getAveragePrice(b.priceRange);
 
-                if (sortBy === "Price (Low-High)") return rankA - rankB;
-                if (sortBy === "Price (High-Low)") return rankB - rankA;
+                if (sortBy === "Price (Low-High)") return priceA - priceB;
+                if (sortBy === "Price (High-Low)") return priceB - priceA;
                 return 0;
             });
-    }, [searchQuery, selectedCuisines, selectedPrices, sortBy]);
+    }, [restaurants, searchQuery, selectedCuisines, selectedPrices, selectedDestinations, sortBy]);
 
     return (
         <section className="bg-slate-50 min-h-screen py-20 pb-32">
@@ -149,9 +283,9 @@ export function RestaurantsExplorer() {
                                     <Filter size={16} className="text-primary" />
                                     Filters
                                 </span>
-                                {(selectedCuisines.length > 0 || selectedPrices.length > 0) && (
+                                {(selectedCuisines.length > 0 || selectedPrices.length > 0 || selectedDestinations.length > 0) && (
                                     <Badge className="bg-primary text-white hover:bg-primary border-none h-6 w-6 rounded-full p-0 flex items-center justify-center text-[10px]">
-                                        {selectedCuisines.length + selectedPrices.length}
+                                        {selectedCuisines.length + selectedPrices.length + selectedDestinations.length}
                                     </Badge>
                                 )}
                             </Button>
@@ -165,11 +299,51 @@ export function RestaurantsExplorer() {
                             <div className="space-y-8 pb-8 pl-4">
                                 {/* Search removed as per request */}
 
+                                {/* Destinations Filter in Sheet */}
+                                <div>
+                                    <h4 className="text-base font-bold text-foreground mb-4">Destinations</h4>
+                                    <div className="space-y-4">
+                                        {availableDestinations.map(d => (
+                                            <div
+                                                key={d}
+                                                role="button"
+                                                tabIndex={0}
+                                                className="flex items-center justify-between group cursor-pointer w-full text-left outline-none focus:ring-2 focus:ring-primary rounded-md p-1 -ml-1 border-none bg-transparent"
+                                                onClick={() => toggleDestination(d)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter" || e.key === " ") {
+                                                        e.preventDefault();
+                                                        toggleDestination(d);
+                                                    }
+                                                }}
+                                            >
+                                                <div className="flex items-center space-x-4 pointer-events-none">
+                                                    <Checkbox
+                                                        id={`mobile-dest-${d}`}
+                                                        checked={selectedDestinations.includes(d)}
+                                                        tabIndex={-1}
+                                                        className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                                    />
+                                                    <Label
+                                                        htmlFor={`mobile-dest-${d}`}
+                                                        className={`text-[13px] font-medium transition-colors ${selectedDestinations.includes(d) ? "text-primary" : "text-foreground/70"}`}
+                                                    >
+                                                        {d}
+                                                    </Label>
+                                                </div>
+                                                <span className="text-[12px] font-medium text-foreground/25 tabular-nums">
+                                                    {destinationCounts[d] || 0}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
                                 {/* Cuisine Filter in Sheet */}
                                 <div>
                                     <h4 className="text-base font-bold text-foreground mb-4">Cuisine Style</h4>
                                     <div className="space-y-4">
-                                        {cuisines.filter(c => c !== "All").map(c => (
+                                        {availableCuisines.filter(c => c !== "All").map(c => (
                                             <div
                                                 key={c}
                                                 role="button"
@@ -209,7 +383,7 @@ export function RestaurantsExplorer() {
                                 <div>
                                     <h4 className="text-base font-bold text-foreground mb-4">Price Level</h4>
                                     <div className="space-y-4">
-                                        {priceRanges.filter(p => p !== "All").map(p => (
+                                        {availablePrices.filter(p => p !== "All").map(p => (
                                             <div
                                                 key={p}
                                                 role="button"
@@ -234,7 +408,7 @@ export function RestaurantsExplorer() {
                                                         htmlFor={`mobile-price-${p}`}
                                                         className={`text-[13px] font-medium transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
                                                     >
-                                                        {p === "$" ? "Budget ($)" : p === "$$" ? "Moderate ($$)" : p === "$$$" ? "Premium ($$$)" : "Luxury ($$$$)"}
+                                                        {p === "All" ? "All Prices" : p}
                                                     </Label>
                                                 </div>
                                                 <span className="text-[12px] font-medium text-foreground/25 tabular-nums">
@@ -259,11 +433,51 @@ export function RestaurantsExplorer() {
                         <div className="space-y-10">
 
 
+                            {/* Destinations Filter - Sticky/Sidebar */}
+                            <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-100">
+                                <h4 className="text-base font-bold text-foreground mb-6">Destinations</h4>
+                                <div className="space-y-4">
+                                    {availableDestinations.map(d => (
+                                        <div
+                                            key={d}
+                                            role="button"
+                                            tabIndex={0}
+                                            className="flex items-center justify-between group cursor-pointer w-full text-left outline-none focus:ring-2 focus:ring-primary rounded-md p-1 -ml-1 border-none bg-transparent"
+                                            onClick={() => toggleDestination(d)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter" || e.key === " ") {
+                                                    e.preventDefault();
+                                                    toggleDestination(d);
+                                                }
+                                            }}
+                                        >
+                                            <div className="flex items-center space-x-4 pointer-events-none">
+                                                <Checkbox
+                                                    id={`dest-${d}`}
+                                                    checked={selectedDestinations.includes(d)}
+                                                    tabIndex={-1}
+                                                    className="h-5 w-5 rounded-[6px] border-slate-200 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                                />
+                                                <Label
+                                                    htmlFor={`dest-${d}`}
+                                                    className={`text-[13px] font-medium transition-colors ${selectedDestinations.includes(d) ? "text-primary" : "text-foreground/70"}`}
+                                                >
+                                                    {d}
+                                                </Label>
+                                            </div>
+                                            <span className="text-[12px] font-medium text-foreground/25 tabular-nums">
+                                                {destinationCounts[d] || 0}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* Cuisine Filter - Multi-select Checkboxes */}
                             <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-100">
                                 <h4 className="text-base font-bold text-foreground mb-6">Cuisine Style</h4>
                                 <div className="space-y-4">
-                                    {cuisines.filter(c => c !== "All").map(c => (
+                                    {availableCuisines.filter(c => c !== "All").map(c => (
                                         <div
                                             key={c}
                                             role="button"
@@ -303,7 +517,7 @@ export function RestaurantsExplorer() {
                             <div className="bg-white p-7 rounded-2xl shadow-sm border border-slate-100">
                                 <h4 className="text-base font-bold text-foreground mb-6">Price Level</h4>
                                 <div className="space-y-4">
-                                    {priceRanges.filter(p => p !== "All").map(p => (
+                                    {availablePrices.filter(p => p !== "All").map(p => (
                                         <div
                                             key={p}
                                             role="button"
@@ -328,7 +542,7 @@ export function RestaurantsExplorer() {
                                                     htmlFor={`price-${p}`}
                                                     className={`text-[13px] font-medium transition-colors ${selectedPrices.includes(p) ? "text-primary" : "text-foreground/70"}`}
                                                 >
-                                                    {p === "$" ? "Budget ($)" : p === "$$" ? "Moderate ($$)" : p === "$$$" ? "Premium ($$$)" : "Luxury ($$$$)"}
+                                                    {p === "All" ? "All Prices" : p}
                                                 </Label>
                                             </div>
                                             <span className="text-[12px] font-medium text-foreground/25 tabular-nums">
@@ -379,12 +593,13 @@ export function RestaurantsExplorer() {
                                     Results Found: <span className="text-primary">{filteredRestaurants.length}</span>
                                 </span>
                             </div>
-                            {(selectedCuisines.length > 0 || selectedPrices.length > 0 || searchQuery !== "") && (
+                            {(selectedCuisines.length > 0 || selectedPrices.length > 0 || selectedDestinations.length > 0 || searchQuery !== "") && (
                                 <Button
                                     variant="ghost"
                                     onClick={() => {
                                         setSelectedCuisines([]);
                                         setSelectedPrices([]);
+                                        setSelectedDestinations([]);
                                         setSearchQuery("");
                                     }}
                                     className="h-auto p-0 hover:bg-transparent flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-[#1A1A1A]/40 hover:text-primary transition-colors"
@@ -395,64 +610,70 @@ export function RestaurantsExplorer() {
                         </div>
 
                         {/* Restaurant Grid */}
-                        {filteredRestaurants.length > 0 ? (
+                        {isLoading ? (
                             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12">
-                                <AnimatePresence mode="popLayout">
-                                    {filteredRestaurants.map((restaurant, idx) => (
-                                        <motion.div
-                                            key={restaurant.id}
-                                            layout
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95 }}
-                                            transition={{ duration: 0.3, delay: idx * 0.02 }}
-                                            className="group cursor-pointer"
-                                        >
-                                            <Link href={`/restaurants/${restaurant.id}`} className="block h-full">
-                                                <div className="bg-white rounded-2xl shadow-sm group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] transition-all duration-500 overflow-hidden h-full flex flex-col border border-slate-100">
-                                                    <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
-                                                        <img
-                                                            src={restaurant.imageUrl}
-                                                            alt={restaurant.name}
-                                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                                        />
-                                                        <div className="absolute top-4 left-4">
-                                                            <Badge className="bg-primary text-white border-none rounded-full font-bold text-[9px] uppercase tracking-widest px-4 py-1.5 shadow-sm">
-                                                                {restaurant.cuisine[0]}
-                                                            </Badge>
+                                {[1, 2, 3, 4, 5, 6].map((n) => (
+                                    <div key={n} className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden h-96 animate-pulse">
+                                        <div className="h-48 bg-slate-200" />
+                                        <div className="p-6 space-y-4">
+                                            <div className="h-6 bg-slate-200 rounded w-3/4" />
+                                            <div className="h-4 bg-slate-200 rounded w-1/2" />
+                                            <div className="h-4 bg-slate-200 rounded w-full" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : filteredRestaurants.length > 0 ? (
+                            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-12">
+                                {filteredRestaurants.map((restaurant) => (
+                                    <div
+                                        key={restaurant.id}
+                                        className="group cursor-pointer"
+                                    >
+                                        <Link href={`/restaurants/${restaurant.id}`} className="block h-full">
+                                            <div className="bg-white rounded-2xl shadow-sm group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] transition-all duration-500 overflow-hidden h-full flex flex-col border border-slate-100">
+                                                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+                                                    <img
+                                                        src={restaurant.imageUrl}
+                                                        alt={restaurant.name}
+                                                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                    />
+                                                    <div className="absolute top-4 left-4">
+                                                        <Badge className="bg-primary text-white border-none rounded-full font-bold text-[9px] uppercase tracking-widest px-4 py-1.5 shadow-sm">
+                                                            {restaurant.cuisine?.[0] || 'Restaurant'}
+                                                        </Badge>
+                                                    </div>
+                                                </div>
+
+                                                <div className="p-6 flex-1 flex flex-col gap-4">
+                                                    <div className="flex justify-between items-start">
+                                                        <div className="flex flex-col gap-1">
+                                                            <h3 className="font-bold text-[17px] text-foreground group-hover:text-primary transition-colors leading-tight tracking-tight">{restaurant.name}</h3>
+                                                            <div className="flex items-center gap-2 text-foreground/30 text-[10px] font-bold uppercase tracking-widest">
+                                                                <MapPin size={10} className="text-primary" />
+                                                                {restaurant.distance || 'Nearby'}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center gap-1.5 px-2 py-1 bg-primary/5 text-primary rounded-md shrink-0">
+                                                            <Star size={12} fill="currentColor" />
+                                                            <span className="font-bold text-xs">{restaurant.rating || 0}</span>
                                                         </div>
                                                     </div>
 
-                                                    <div className="p-6 flex-1 flex flex-col gap-4">
-                                                        <div className="flex justify-between items-start">
-                                                            <div className="flex flex-col gap-1">
-                                                                <h3 className="font-bold text-[17px] text-foreground group-hover:text-primary transition-colors leading-tight tracking-tight">{restaurant.name}</h3>
-                                                                <div className="flex items-center gap-2 text-foreground/30 text-[10px] font-bold uppercase tracking-widest">
-                                                                    <MapPin size={10} className="text-primary" />
-                                                                    {restaurant.distance}
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex items-center gap-1.5 px-2 py-1 bg-primary/5 text-primary rounded-md shrink-0">
-                                                                <Star size={12} fill="currentColor" />
-                                                                <span className="font-bold text-xs">{restaurant.rating}</span>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="mt-auto pt-5 border-t border-slate-50 flex items-center justify-between group/action">
-                                                            <span className="text-xs font-bold text-foreground/40">{restaurant.priceRange}</span>
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-[10px] font-bold uppercase tracking-widest text-[#1A1A1A] group-hover/action:text-primary transition-all">View Profile</span>
-                                                                <div className="h-6 w-6 rounded-full bg-slate-50 flex items-center justify-center text-primary/40 group-hover/action:bg-primary group-hover/action:text-white transition-all">
-                                                                    <ArrowRight size={10} />
-                                                                </div>
+                                                    <div className="mt-auto pt-5 border-t border-slate-50 flex items-center justify-between group/action">
+                                                        <span className="text-xs font-bold text-foreground/40">{restaurant.priceRange}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#1A1A1A] group-hover/action:text-primary transition-all">View Profile</span>
+                                                            <div className="h-6 w-6 rounded-full bg-slate-50 flex items-center justify-center text-primary/40 group-hover/action:bg-primary group-hover/action:text-white transition-all">
+                                                                <ArrowRight size={10} />
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </Link>
-                                        </motion.div>
-                                    ))}
-                                </AnimatePresence>
+                                            </div>
+                                        </Link>
+                                    </div>
+                                ))}
                             </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-32 text-center bg-white rounded-3xl border border-dashed border-slate-200">
@@ -463,6 +684,19 @@ export function RestaurantsExplorer() {
                                 <p className="text-foreground/40 text-[11px] font-bold uppercase tracking-widest max-w-xs">
                                     Try expanding your filters to discover other hidden culinary stars.
                                 </p>
+                            </div>
+                        )}
+
+                        {hasMore && !isLoading && (
+                            <div className="flex justify-center pt-12">
+                                <Button
+                                    variant="outline"
+                                    onClick={handleLoadMore}
+                                    disabled={isLoadingMore}
+                                    className="bg-white hover:bg-slate-50 text-foreground border border-slate-200 h-12 px-8 rounded-xl font-bold tracking-tight shadow-sm"
+                                >
+                                    {isLoadingMore ? "Loading..." : "Load More Restaurants"}
+                                </Button>
                             </div>
                         )}
                     </div>

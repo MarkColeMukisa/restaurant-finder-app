@@ -178,6 +178,7 @@ export function Header() {
                             <button
                                 className="lg:hidden p-2 text-foreground"
                                 aria-label="Open menu"
+                                suppressHydrationWarning
                             >
                                 <Menu size={28} />
                             </button>

@@ -40,10 +40,12 @@ export async function POST(req) {
         const body = await req.json();
 
         // Destructure and Validate
-        const { name, description, cuisine, priceRange, location, imageUrl, isPopular, isTouristFavorite, isVegetarianFriendly, lat, lng, websiteUrl, menuUrl, phone, openingHours, features } = body;
+        const { name, description, cuisine, priceRange, location, address, imageUrl, isPopular, isTouristFavorite, isVegetarianFriendly, lat, lng, latitude, longitude, websiteUrl, menuUrl, phone, phoneNumber, openingHours, openHours, features, amenities } = body;
+
+        const finalAddress = location || address;
 
         if (!name || typeof name !== 'string') return NextResponse.json({ error: "Invalid Name" }, { status: 400 });
-        if (!location || typeof location !== 'string') return NextResponse.json({ error: "Invalid Location" }, { status: 400 });
+        if (!finalAddress || typeof finalAddress !== 'string') return NextResponse.json({ error: "Invalid Location/Address" }, { status: 400 });
         if (!priceRange || typeof priceRange !== 'string') return NextResponse.json({ error: "Invalid Price Range" }, { status: 400 });
 
         // Cuisine Validation
@@ -57,20 +59,20 @@ export async function POST(req) {
             description: description || "",
             cuisine: Array.isArray(cuisine) ? cuisine : [cuisine], // Ensure array if schema requires it, or logic handles it
             priceRange,
-            address: location,
+            address: finalAddress,
             imageUrl: imageUrl || "/placeholder.jpg",
             rating: 0, // Default rating
             reviews: 0,
             isPopular: !!isPopular,
             isTouristFavorite: !!isTouristFavorite,
             isVegetarianFriendly: !!isVegetarianFriendly,
-            latitude: lat || null,
-            longitude: lng || null,
+            latitude: lat || latitude || null,
+            longitude: lng || longitude || null,
             websiteUrl: websiteUrl || null,
             menuUrl: menuUrl || null,
-            phoneNumber: phone || null,
-            openHours: openingHours || null,
-            amenities: features || [],
+            phoneNumber: phone || phoneNumber || null,
+            openHours: openingHours || openHours || null,
+            amenities: features || amenities || [],
             createdAt: new Date(),
             updatedAt: new Date(),
         });

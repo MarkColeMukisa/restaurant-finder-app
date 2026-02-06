@@ -190,10 +190,25 @@ export default function RestaurantManagementPage() {
         setSelectedRestaurant(restaurant);
         setFormData({
             ...restaurant,
+            name: restaurant.name || "",
+            description: restaurant.description || "",
+            address: restaurant.address || "",
+            priceRange: restaurant.priceRange || "",
+            distance: restaurant.distance || "",
+            openHours: restaurant.openHours || "",
+            imageUrl: restaurant.imageUrl || "",
+            websiteUrl: restaurant.websiteUrl || "",
+            menuUrl: restaurant.menuUrl || "",
+            phoneNumber: restaurant.phoneNumber || "",
+            email: restaurant.email || "",
             latitude: restaurant.latitude?.toString() || "",
             longitude: restaurant.longitude?.toString() || "",
             rating: restaurant.rating?.toString() || "0",
-            reviews: restaurant.reviews?.toString() || "0"
+            reviews: restaurant.reviews?.toString() || "0",
+            cuisine: restaurant.cuisine || [],
+            images: restaurant.images || [],
+            amenities: restaurant.amenities || [],
+            languages: restaurant.languages || ["English"],
         });
         setIsEditOpen(true);
     };

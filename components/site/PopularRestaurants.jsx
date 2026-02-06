@@ -2,10 +2,8 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Star, MapPin, ArrowRight, Bookmark } from "lucide-react";
-import { restaurants } from "@/lib/dummy-data";
+import { Star, ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
@@ -15,24 +13,7 @@ const FEATURE_BADGES = [
     { key: 'isVegetarianFriendly', label: 'Veg Friendly', color: 'bg-green-600' }
 ];
 
-export function PopularRestaurants() {
-    const [eliteSpots, setEliteSpots] = React.useState([]);
-
-    React.useEffect(() => {
-        async function fetchPopular() {
-            try {
-                // Use the public retrieval endpoint instead of the protected admin API
-                const response = await fetch("/api/restaurants/popular");
-                if (response.ok) {
-                    const data = await response.json();
-                    setEliteSpots(data.slice(0, 3));
-                }
-            } catch (e) {
-                console.error("Failed to fetch popular spots:", e);
-            }
-        }
-        fetchPopular();
-    }, []);
+export function PopularRestaurants({ eliteSpots = [] }) {
 
     return (
         <section className="py-10 bg-[#F8F9FA] relative">
@@ -42,6 +23,13 @@ export function PopularRestaurants() {
                         <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">Popular <span className="text-primary">Restaurants</span></h2>
                         <p className="text-slate-500 text-lg max-w-xl">Curated selection of our most loved dining destinations.</p>
                     </div>
+                    <Link
+                        href="/restaurants"
+                        className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-primary hover:text-foreground transition-all group/view-more shrink-0 lg:mb-2"
+                    >
+                        View More
+                        <ArrowRight size={14} className="transition-transform group-hover/view-more:translate-x-1" />
+                    </Link>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-10">
@@ -112,14 +100,6 @@ export function PopularRestaurants() {
                             </Link>
                         </motion.div>
                     ))}
-                </div>
-
-                <div className="mt-20 text-center">
-                    <Link href="/restaurants">
-                        <Button className="rounded-full bg-foreground hover:bg-[#0d0c22] text-white px-10 h-14 font-bold text-sm transition-all shadow-xl shadow-foreground/5 active:scale-95">
-                            View Complete Selection
-                        </Button>
-                    </Link>
                 </div>
             </div>
         </section>

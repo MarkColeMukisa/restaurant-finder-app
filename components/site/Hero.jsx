@@ -13,7 +13,9 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select";
-import { cuisines } from "@/lib/dummy-data";
+import { useRouter } from "next/navigation";
+// Removed dummy data import
+// import { cuisines } from "@/lib/dummy-data";
 
 const carouselItems = [
     {
@@ -36,8 +38,11 @@ const carouselItems = [
     }
 ];
 
-export function Hero() {
+export function Hero({ cuisines = [] }) {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedCuisine, setSelectedCuisine] = useState("");
+    const router = useRouter();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -45,6 +50,20 @@ export function Hero() {
         }, 5000);
         return () => clearInterval(timer);
     }, []);
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (searchQuery) params.set("search", searchQuery);
+        if (selectedCuisine) params.set("cuisine", selectedCuisine);
+
+        router.push(`/restaurants?${params.toString()}`);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
 
     return (
         <section id="home" className="relative pt-32 pb-10 bg-white overflow-hidden">
@@ -77,11 +96,14 @@ export function Hero() {
                                 <Input
                                     placeholder="Enter city or area..."
                                     className="w-full h-14 bg-transparent border-none rounded-full px-0 text-[15px] font-bold text-foreground placeholder:text-foreground/20 focus-visible:ring-0 focus-visible:ring-offset-0 leading-none shadow-none focus:outline-none"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onKeyDown={handleKeyDown}
                                 />
                             </div>
                             <div className="w-[1px] h-8 bg-slate-200 hidden md:block mx-4" />
                             <div className="w-1/3 hidden md:block px-4">
-                                <Select>
+                                <Select value={selectedCuisine} onValueChange={setSelectedCuisine}>
                                     <SelectTrigger className="w-full h-14 border-none bg-transparent rounded-full px-0 text-[14px] font-bold text-foreground focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0 uppercase tracking-[0.15em] flex items-center justify-start gap-3 shadow-none group/select transition-colors hover:text-primary outline-none ring-0">
                                         <div className="flex items-center gap-3 w-full">
                                             <Utensils size={18} className="text-primary shrink-0 transition-transform group-hover/select:scale-110" />
@@ -91,17 +113,21 @@ export function Hero() {
                                             </div>
                                         </div>
                                     </SelectTrigger>
-                                    <SelectContent className="rounded-[1.5rem] bg-white shadow-2xl border border-slate-100 p-3 translate-y-3 min-w-[220px] z-[100] font-sans">
+                                    <SelectContent className="rounded-[1.5rem] bg-white shadow-2xl border border-slate-100 p-3 translate-y-3 min-w-[220px] z-[100] font-sans h-60 overflow-y-auto">
                                         <div className="px-4 py-2 border-b border-slate-50 mb-2">
                                             <span className="text-[10px] font-black text-foreground/20 uppercase tracking-[0.2em]">Available Flavors</span>
                                         </div>
+                                        <SelectItem value="all_cuisines_clear_value" className="font-bold py-3.5 px-6 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-sm mb-1 text-primary/50">Any Cuisine</SelectItem>
                                         {cuisines.map((c) => (
-                                            <SelectItem key={c} value={c.toLowerCase()} className="font-bold py-3.5 px-6 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-sm mb-1 last:mb-0 ">{c}</SelectItem>
+                                            <SelectItem key={c} value={c} className="font-bold py-3.5 px-6 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer text-sm mb-1 last:mb-0 ">{c}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <Button className="h-14 md:px-10 rounded-full bg-[#0d0c22] hover:bg-[#2d2c42] text-white shadow-none transition-all flex items-center justify-center shrink-0 group-hover:scale-[1.02] active:scale-95">
+                            <Button
+                                onClick={handleSearch}
+                                className="h-14 md:px-10 rounded-full bg-[#0d0c22] hover:bg-[#2d2c42] text-white shadow-none transition-all flex items-center justify-center shrink-0 group-hover:scale-[1.02] active:scale-95"
+                            >
                                 <span className="text-sm font-bold">Search</span>
                             </Button>
                         </div>

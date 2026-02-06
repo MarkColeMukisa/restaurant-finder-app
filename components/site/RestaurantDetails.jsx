@@ -36,15 +36,24 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useState } from "react";
-import { reviews, travellerPhotos, restaurants } from "@/lib/dummy-data";
+import { travellerPhotos } from "@/lib/dummy-data";
+import { authClient } from "@/lib/auth-client";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 
-export function RestaurantDetails({ restaurant }) {
+export function RestaurantDetails({ restaurant, initialReviews = [], initialRelated = [] }) {
     const [isReviewOpen, setIsReviewOpen] = useState(false);
     const [selectedRating, setSelectedRating] = useState(0);
     const [reviewTitle, setReviewTitle] = useState("");
     const [reviewContent, setReviewContent] = useState("");
     const [activeImage, setActiveImage] = useState(null);
     const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
+    // Initialize with server-fetched data
+    const [reviewsData, setReviewsData] = useState(initialReviews);
+    const [hasMore, setHasMore] = useState(initialReviews.length >= 6);
+    const [isLoadingMore, setIsLoadingMore] = useState(false);
+    // relatedRestaurants doesn't need state if it doesn't change, but consistent variable naming helps
+    const relatedRestaurants = initialRelated;
 
     React.useEffect(() => {
         if (restaurant) {
@@ -54,9 +63,74 @@ export function RestaurantDetails({ restaurant }) {
 
     const hasGallery = restaurant?.images && restaurant.images.length > 0;
 
-    if (!restaurant) return null;
+    const [authOpen, setAuthOpen] = useState(false);
+    const [authView, setAuthView] = useState("login");
+    const { data: session } = authClient.useSession();
 
-    const restaurantReviews = reviews.filter(r => r.restaurantId === restaurant.id);
+    const handleLoadMore = async () => {
+        setIsLoadingMore(true);
+        try {
+            const offset = reviewsData.length;
+            const response = await fetch(`/api/reviews/list?restaurantId=${restaurant.id}&limit=6&offset=${offset}`);
+            if (response.ok) {
+                const newReviews = await response.json();
+                if (newReviews.length < 6) {
+                    setHasMore(false);
+                }
+                setReviewsData([...reviewsData, ...newReviews]);
+            }
+        } catch (error) {
+            console.error("Failed to load more reviews", error);
+        } finally {
+            setIsLoadingMore(false);
+        }
+    };
+
+    const handleReviewClick = () => {
+        if (!session) {
+            setAuthView("signup");
+            setAuthOpen(true);
+            return;
+        }
+        setIsReviewOpen(true);
+    };
+
+    const handleSubmitReview = async () => {
+        if (selectedRating === 0 || !reviewTitle.trim() || !reviewContent.trim() || !session) {
+            return;
+        }
+
+        try {
+            const payload = {
+                restaurantId: restaurant.id,
+                rating: selectedRating,
+                title: reviewTitle,
+                content: reviewContent,
+                userName: session.user.name,
+                userId: session.user.id,
+                userImage: session.user.image,
+            };
+
+            const response = await fetch("/api/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+                const newReview = await response.json();
+                setReviewsData([newReview, ...reviewsData]);
+                setIsReviewOpen(false);
+                setSelectedRating(0);
+                setReviewTitle("");
+                setReviewContent("");
+            }
+        } catch (error) {
+            console.error("Failed to submit review", error);
+        }
+    };
+
+    if (!restaurant) return null;
 
     return (
         <section className="bg-slate-50 min-h-screen pt-12">
@@ -456,13 +530,17 @@ export function RestaurantDetails({ restaurant }) {
                             <div className="h-8 w-1.5 bg-primary rounded-full" />
                             <h2 className="text-2xl font-bold text-foreground tracking-tight">Reviews & Ratings</h2>
                         </div>
+                        <Button
+                            onClick={handleReviewClick}
+                            className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold flex items-center gap-2"
+                        >
+                            <PenLine size={16} />
+                            Write a Review
+                        </Button>
+
+                        <AuthDialog open={authOpen} onOpenChange={setAuthOpen} initialView={authView} />
+
                         <Dialog open={isReviewOpen} onOpenChange={setIsReviewOpen}>
-                            <DialogTrigger asChild>
-                                <Button className="bg-primary hover:bg-primary/90 text-white rounded-xl font-bold flex items-center gap-2">
-                                    <PenLine size={16} />
-                                    Write a Review
-                                </Button>
-                            </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>
                                     <DialogTitle>Write a Review</DialogTitle>
@@ -514,34 +592,16 @@ export function RestaurantDetails({ restaurant }) {
                                 <DialogFooter>
                                     <Button
                                         disabled={selectedRating === 0 || !reviewTitle.trim() || !reviewContent.trim()}
-                                        onClick={() => {
-                                            if (selectedRating === 0 || !reviewTitle.trim() || !reviewContent.trim()) {
-                                                return;
-                                            }
-
-                                            const payload = {
-                                                restaurantId: restaurant.id,
-                                                rating: selectedRating,
-                                                title: reviewTitle,
-                                                content: reviewContent,
-                                                date: new Date().toISOString()
-                                            };
-                                            console.log("Submitting Review Payload:", payload);
-                                            // TODO: Send payload to API
-                                            setIsReviewOpen(false);
-                                            setSelectedRating(0);
-                                            setReviewTitle("");
-                                            setReviewContent("");
-                                        }}>Submit Review</Button>
+                                        onClick={handleSubmitReview}>Submit Review</Button>
                                 </DialogFooter>
                             </DialogContent>
                         </Dialog>
                     </div>
 
                     <div className="space-y-6">
-                        {restaurantReviews.length > 0 ? (
+                        {reviewsData.length > 0 ? (
                             <div className="grid md:grid-cols-2 gap-6">
-                                {restaurantReviews.map((review) => (
+                                {reviewsData.map((review) => (
                                     <div key={review.id} className="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-100 flex gap-4">
                                         <Avatar className="h-12 w-12 border-2 border-white shadow-sm">
                                             <AvatarImage src={review.userImage} alt={review.userName} />
@@ -551,7 +611,7 @@ export function RestaurantDetails({ restaurant }) {
                                             <div className="flex justify-between items-start">
                                                 <div>
                                                     <h4 className="font-bold text-foreground">{review.userName}</h4>
-                                                    <p className="text-xs text-foreground/40 font-medium">{review.date}</p>
+                                                    <p className="text-xs text-foreground/40 font-medium">{new Date(review.createdAt).toLocaleDateString()}</p>
                                                 </div>
                                                 <div className="flex gap-0.5 text-yellow-400">
                                                     {[...Array(5)].map((_, i) => (
@@ -560,7 +620,7 @@ export function RestaurantDetails({ restaurant }) {
                                                 </div>
                                             </div>
                                             <p className="text-foreground/70 leading-relaxed text-sm">
-                                                "{review.comment}"
+                                                "{review.content}"
                                             </p>
                                         </div>
                                     </div>
@@ -569,6 +629,19 @@ export function RestaurantDetails({ restaurant }) {
                         ) : (
                             <div className="p-8 text-center text-foreground/40 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                                 <p>No reviews yet. Be the first to share your experience!</p>
+                            </div>
+                        )}
+
+                        {hasMore && reviewsData.length > 0 && (
+                            <div className="flex justify-center pt-4">
+                                <Button
+                                    variant="outline"
+                                    onClick={handleLoadMore}
+                                    disabled={isLoadingMore}
+                                    className="rounded-xl border-slate-200 text-foreground font-bold"
+                                >
+                                    {isLoadingMore ? "Loading..." : "Load More Reviews"}
+                                </Button>
                             </div>
                         )}
                     </div>
@@ -621,7 +694,7 @@ export function RestaurantDetails({ restaurant }) {
                     </div>
 
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {restaurants.filter(r => r.id !== restaurant.id).slice(0, 4).map((related) => (
+                        {relatedRestaurants.map((related) => (
                             <Link key={related.id} href={`/restaurants/${related.id}`} className="group block space-y-4">
                                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100 border border-slate-100 group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] transition-all duration-500">
                                     <img
