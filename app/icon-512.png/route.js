@@ -16,7 +16,6 @@ export async function GET() {
                     alignItems: "center",
                     justifyContent: "center",
                     color: "white",
-                    borderRadius: "100%",
                 }}
             >
                 <svg
