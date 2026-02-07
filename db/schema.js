@@ -102,3 +102,10 @@ export const reviews = pgTable("reviews", {
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const favorites = pgTable("favorites", {
+    id: text("id").primaryKey(),
+    userId: text("userId").notNull().references(() => user.id, { onDelete: "cascade" }),
+    restaurantId: text("restaurantId").notNull().references(() => restaurants.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+

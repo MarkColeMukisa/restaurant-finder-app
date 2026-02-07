@@ -140,10 +140,12 @@ export function Header() {
                                         <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Profile</span>
                                     </DropdownMenuItem>
                                 </Link>
-                                <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
-                                    <Heart size={16} className="mr-3 text-red-500 group-hover:scale-110 transition-transform" />
-                                    <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Favourites</span>
-                                </DropdownMenuItem>
+                                <Link href="/profile/favorites">
+                                    <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
+                                        <Heart size={16} className="mr-3 text-red-500 group-hover:scale-110 transition-transform" />
+                                        <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Favourites</span>
+                                    </DropdownMenuItem>
+                                </Link>
                                 <DropdownMenuSeparator className="bg-slate-50 my-2" />
                                 <DropdownMenuItem
                                     className="rounded-xl cursor-pointer py-3 px-3 text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-700 transition-colors group"

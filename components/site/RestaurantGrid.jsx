@@ -21,8 +21,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export function RestaurantGrid({ restaurants = [] }) {
+    const { isFavorite, toggleFavorite } = useFavorites();
     // Display a limited selection for the home page highlight
     const displayRestaurants = restaurants.slice(0, 8);
 
@@ -69,9 +71,20 @@ export function RestaurantGrid({ restaurants = [] }) {
                                                 <MapPin size={24} />
                                             </div>
                                         )}
-                                        <div className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/95 flex items-center justify-center text-foreground/20 hover:text-primary transition-colors shadow-sm">
-                                            <Heart size={18} fill={restaurant.isTouristFavorite ? "currentColor" : "none"} className={restaurant.isTouristFavorite ? "text-primary" : ""} />
-                                        </div>
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                toggleFavorite(restaurant.id);
+                                            }}
+                                            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/95 flex items-center justify-center text-foreground/20 hover:text-red-500 transition-colors shadow-sm z-10"
+                                        >
+                                            <Heart
+                                                size={18}
+                                                fill={isFavorite(restaurant.id) ? "currentColor" : "none"}
+                                                className={isFavorite(restaurant.id) ? "text-red-500" : ""}
+                                            />
+                                        </button>
                                         {restaurant.rating >= 4.8 && (
                                             <div className="absolute bottom-4 left-4">
                                                 <Badge className="bg-primary text-white rounded-full border-none font-bold text-[9px] uppercase tracking-widest px-4 py-1">

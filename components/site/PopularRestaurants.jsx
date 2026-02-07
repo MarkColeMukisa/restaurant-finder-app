@@ -7,13 +7,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 import Link from "next/link";
+import { useFavorites } from "@/hooks/useFavorites";
 
 const FEATURE_BADGES = [
     { key: 'isTouristFavorite', label: 'Elite Choice', color: 'bg-primary' },
     { key: 'isVegetarianFriendly', label: 'Veg Friendly', color: 'bg-green-600' }
 ];
 
-export function PopularRestaurants({ eliteSpots = [] }) {
+export function PopularRestaurants({ restaurants = [] }) {
+    const { isFavorite, toggleFavorite } = useFavorites();
 
     return (
         <section className="py-10 bg-[#F8F9FA] relative">
@@ -33,7 +35,7 @@ export function PopularRestaurants({ eliteSpots = [] }) {
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-10">
-                    {eliteSpots.map((restaurant, idx) => (
+                    {restaurants.map((restaurant, idx) => (
                         <motion.div
                             key={restaurant.id}
                             initial={{ opacity: 0, y: 30 }}
@@ -45,6 +47,20 @@ export function PopularRestaurants({ eliteSpots = [] }) {
                             <Link href={`/restaurants/${restaurant.id}`} className="block h-full">
                                 <Card className="border-none bg-white rounded-2xl shadow-sm group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.06)] transition-all duration-500 overflow-hidden h-full flex flex-col p-0 gap-0">
                                     <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                                        <button
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                toggleFavorite(restaurant.id);
+                                            }}
+                                            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/95 flex items-center justify-center text-foreground/20 hover:text-red-500 transition-colors shadow-sm z-10"
+                                        >
+                                            <Heart
+                                                size={18}
+                                                fill={isFavorite(restaurant.id) ? "currentColor" : "none"}
+                                                className={isFavorite(restaurant.id) ? "text-red-500" : ""}
+                                            />
+                                        </button>
                                         <img
                                             src={restaurant.imageUrl}
                                             alt={restaurant.name}

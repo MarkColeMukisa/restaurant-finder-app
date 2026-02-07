@@ -39,6 +39,7 @@ import { useState } from "react";
 import { travellerPhotos } from "@/lib/dummy-data";
 import { authClient } from "@/lib/auth-client";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { useFavorites } from "@/hooks/useFavorites";
 
 export function RestaurantDetails({ restaurant, initialReviews = [], initialRelated = [] }) {
     const [isReviewOpen, setIsReviewOpen] = useState(false);
@@ -66,6 +67,8 @@ export function RestaurantDetails({ restaurant, initialReviews = [], initialRela
     const [authOpen, setAuthOpen] = useState(false);
     const [authView, setAuthView] = useState("login");
     const { data: session } = authClient.useSession();
+
+    const { isFavorite, toggleFavorite } = useFavorites();
 
     const handleLoadMore = async () => {
         setIsLoadingMore(true);
@@ -209,8 +212,13 @@ export function RestaurantDetails({ restaurant, initialReviews = [], initialRela
                             <Button size="icon" variant="ghost" className="bg-white/80 hover:bg-white text-foreground rounded-full backdrop-blur-md shadow-sm border border-white/20">
                                 <Share2 size={18} />
                             </Button>
-                            <Button size="icon" variant="ghost" className="bg-white/80 hover:bg-white text-foreground rounded-full backdrop-blur-md shadow-sm border border-white/20">
-                                <Heart size={18} />
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                className={`rounded-full backdrop-blur-md shadow-sm border border-white/20 ${isFavorite(restaurant.id) ? "bg-white text-red-500 hover:bg-white hover:text-red-500" : "bg-white/80 hover:bg-white text-foreground"}`}
+                                onClick={() => toggleFavorite(restaurant.id)}
+                            >
+                                <Heart size={18} fill={isFavorite(restaurant.id) ? "currentColor" : "none"} />
                             </Button>
                         </div>
                     </div>
@@ -702,9 +710,20 @@ export function RestaurantDetails({ restaurant, initialReviews = [], initialRela
                                         alt={related.name}
                                         className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110"
                                     />
-                                    <div className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/95 flex items-center justify-center text-foreground/20 hover:text-primary transition-colors shadow-sm">
-                                        <Heart size={14} fill={related.isTouristFavorite ? "currentColor" : "none"} className={related.isTouristFavorite ? "text-primary" : ""} />
-                                    </div>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            toggleFavorite(related.id);
+                                        }}
+                                        className="absolute top-3 right-3 h-8 w-8 rounded-full bg-white/95 flex items-center justify-center text-foreground/20 hover:text-red-500 transition-colors shadow-sm z-10"
+                                    >
+                                        <Heart
+                                            size={14}
+                                            fill={isFavorite(related.id) ? "currentColor" : "none"}
+                                            className={isFavorite(related.id) ? "text-red-500" : ""}
+                                        />
+                                    </button>
                                     {related.rating >= 4.8 && (
                                         <div className="absolute bottom-3 left-3">
                                             <Badge className="bg-primary text-white rounded-full border-none font-bold text-[8px] uppercase tracking-widest px-3 py-1">

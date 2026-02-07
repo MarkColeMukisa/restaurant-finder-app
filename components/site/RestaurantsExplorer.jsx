@@ -36,6 +36,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useFavorites } from "@/hooks/useFavorites";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 function getAveragePrice(range) {
@@ -45,11 +46,13 @@ function getAveragePrice(range) {
     return matches.reduce((a, b) => parseInt(a) + parseInt(b), 0) / matches.length;
 }
 
-export function RestaurantsExplorer({ initialRestaurants = [] }) {
+export function RestaurantsExplorer({ initialRestaurants = [], allCuisines = [], allLocations = [] }) {
     const searchParams = useSearchParams();
+    const { isFavorite, toggleFavorite } = useFavorites();
     const router = useRouter();
     const pathname = usePathname();
     const initialSearch = searchParams.get("search") || "";
+    const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
     const [restaurants, setRestaurants] = useState(initialRestaurants);
     const [hasMore, setHasMore] = useState(initialRestaurants.length >= 12);
@@ -638,10 +641,21 @@ export function RestaurantsExplorer({ initialRestaurants = [] }) {
                                                         alt={restaurant.name}
                                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                                     />
-                                                    <div className="absolute top-4 left-4">
-                                                        <Badge className="bg-primary text-white border-none rounded-full font-bold text-[9px] uppercase tracking-widest px-4 py-1.5 shadow-sm">
-                                                            {restaurant.cuisine?.[0] || 'Restaurant'}
-                                                        </Badge>
+                                                    <div className="absolute top-4 right-4 z-10">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                toggleFavorite(restaurant.id);
+                                                            }}
+                                                            className="h-10 w-10 rounded-full bg-white/95 flex items-center justify-center text-foreground/20 hover:text-red-500 transition-colors shadow-sm"
+                                                        >
+                                                            <Heart
+                                                                size={18}
+                                                                fill={isFavorite(restaurant.id) ? "currentColor" : "none"}
+                                                                className={isFavorite(restaurant.id) ? "text-red-500" : ""}
+                                                            />
+                                                        </button>
                                                     </div>
                                                 </div>
 
