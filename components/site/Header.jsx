@@ -99,63 +99,74 @@ export function Header() {
                     {isPending ? (
                         <div className="h-10 w-24 bg-slate-100 animate-pulse rounded-xl hidden lg:block" />
                     ) : session ? (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <button className="flex items-center gap-3 p-1 pr-3 rounded-full hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100">
-                                    <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
-                                        <AvatarImage src={session.user.image} />
-                                        <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                                            {session.user.name?.charAt(0)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <div className="text-left hidden xl:block">
-                                        <p className="text-xs font-bold text-foreground leading-none">{session.user.name}</p>
-                                        <p className="text-[10px] text-foreground/40 font-medium">Verified Finder</p>
-                                    </div>
-                                    <ChevronDown size={14} className="text-foreground/20 hidden xl:block" />
-                                </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-slate-200 bg-white shadow-2xl shadow-slate-200/50 opacity-100 z-[100]">
-                                <DropdownMenuLabel className="px-3 py-2">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30 block mb-1">My Account</span>
-                                        {session.user.role === "admin" && (
-                                            <Badge className="h-4 px-1 text-[8px] bg-blue-500 text-white rounded-md border-none font-black -mt-1">ADMIN</Badge>
-                                        )}
-                                    </div>
-                                    <span className="text-sm font-bold text-foreground truncate block">{session.user.email}</span>
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator className="bg-slate-50 my-2" />
-                                {session.user.role === "admin" && (
-                                    <Link href="/admin">
-                                        <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-blue-50 text-blue-600 transition-colors group">
-                                            <Shield size={16} className="mr-3 group-hover:scale-110 transition-transform" />
-                                            <span className="font-black text-[11px] uppercase tracking-widest">Admin Dashboard</span>
+                        <>
+                            {/* Favorites Icon */}
+                            <Link
+                                href="/favorites"
+                                className="hidden lg:flex h-10 w-10 rounded-full bg-slate-50 hover:bg-red-50 items-center justify-center text-slate-400 hover:text-red-500 transition-all border border-transparent hover:border-red-100"
+                                title="My Favorites"
+                            >
+                                <Heart size={18} />
+                            </Link>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <button className="flex items-center gap-3 p-1 pr-3 rounded-full hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100">
+                                        <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
+                                            <AvatarImage src={session.user.image} />
+                                            <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                                                {session.user.name?.charAt(0)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="text-left hidden xl:block">
+                                            <p className="text-xs font-bold text-foreground leading-none">{session.user.name}</p>
+                                            <p className="text-[10px] text-foreground/40 font-medium">Verified Finder</p>
+                                        </div>
+                                        <ChevronDown size={14} className="text-foreground/20 hidden xl:block" />
+                                    </button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-56 p-2 rounded-2xl border-slate-200 bg-white shadow-2xl shadow-slate-200/50 opacity-100 z-[100]">
+                                    <DropdownMenuLabel className="px-3 py-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/30 block mb-1">My Account</span>
+                                            {session.user.role === "admin" && (
+                                                <Badge className="h-4 px-1 text-[8px] bg-blue-500 text-white rounded-md border-none font-black -mt-1">ADMIN</Badge>
+                                            )}
+                                        </div>
+                                        <span className="text-sm font-bold text-foreground truncate block">{session.user.email}</span>
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator className="bg-slate-50 my-2" />
+                                    {session.user.role === "admin" && (
+                                        <Link href="/admin">
+                                            <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-blue-50 text-blue-600 transition-colors group">
+                                                <Shield size={16} className="mr-3 group-hover:scale-110 transition-transform" />
+                                                <span className="font-black text-[11px] uppercase tracking-widest">Admin Dashboard</span>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                    )}
+                                    <Link href="/profile">
+                                        <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
+                                            <User size={16} className="mr-3 text-primary group-hover:scale-110 transition-transform" />
+                                            <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Profile</span>
                                         </DropdownMenuItem>
                                     </Link>
-                                )}
-                                <Link href="/profile">
-                                    <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
-                                        <User size={16} className="mr-3 text-primary group-hover:scale-110 transition-transform" />
-                                        <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Profile</span>
+                                    <Link href="/profile/favorites">
+                                        <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
+                                            <Heart size={16} className="mr-3 text-red-500 group-hover:scale-110 transition-transform" />
+                                            <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Favourites</span>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <DropdownMenuSeparator className="bg-slate-50 my-2" />
+                                    <DropdownMenuItem
+                                        className="rounded-xl cursor-pointer py-3 px-3 text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-700 transition-colors group"
+                                        onClick={logout}
+                                    >
+                                        <LogOut size={16} className="mr-3 group-hover:-translate-x-0.5 transition-transform" />
+                                        <span className="font-bold text-[11px] uppercase tracking-widest">Sign Out</span>
                                     </DropdownMenuItem>
-                                </Link>
-                                <Link href="/profile/favorites">
-                                    <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
-                                        <Heart size={16} className="mr-3 text-red-500 group-hover:scale-110 transition-transform" />
-                                        <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Favourites</span>
-                                    </DropdownMenuItem>
-                                </Link>
-                                <DropdownMenuSeparator className="bg-slate-50 my-2" />
-                                <DropdownMenuItem
-                                    className="rounded-xl cursor-pointer py-3 px-3 text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-700 transition-colors group"
-                                    onClick={logout}
-                                >
-                                    <LogOut size={16} className="mr-3 group-hover:-translate-x-0.5 transition-transform" />
-                                    <span className="font-bold text-[11px] uppercase tracking-widest">Sign Out</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </>
                     ) : (
                         <div className="hidden lg:flex items-center gap-4">
                             <Button
