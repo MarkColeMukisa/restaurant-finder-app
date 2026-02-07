@@ -36,6 +36,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dropzone } from "@/components/ui/dropzone";
 import {
     Dialog,
     DialogContent,
@@ -46,7 +48,6 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
     Select,
     SelectContent,
@@ -114,7 +115,8 @@ export default function RestaurantManagementPage() {
         email: "",
         rating: "0",
         reviews: "0",
-        isPopular: false
+        isPopular: false,
+        travelerPhotos: []
     });
 
     const fetchRestaurants = useCallback(async () => {
@@ -158,6 +160,32 @@ export default function RestaurantManagementPage() {
         }));
     };
 
+    const addTravelerPhoto = () => {
+        setFormData(prev => ({
+            ...prev,
+            travelerPhotos: [
+                ...prev.travelerPhotos,
+                { imageUrl: "", caption: "", user: "" }
+            ]
+        }));
+    };
+
+    const removeTravelerPhoto = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            travelerPhotos: prev.travelerPhotos.filter((_, i) => i !== index)
+        }));
+    };
+
+    const handleTravelerPhotoChange = (index, field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            travelerPhotos: prev.travelerPhotos.map((photo, i) =>
+                i === index ? { ...photo, [field]: value } : photo
+            )
+        }));
+    };
+
     const openAddModal = () => {
         setFormData({
             name: "",
@@ -181,36 +209,54 @@ export default function RestaurantManagementPage() {
             email: "",
             rating: "0",
             reviews: "0",
-            isPopular: false
+            isPopular: false,
+            travelerPhotos: []
         });
         setIsAddOpen(true);
     };
 
-    const openEditModal = (restaurant) => {
+    const openEditModal = async (restaurant) => {
         setSelectedRestaurant(restaurant);
-        setFormData({
-            ...restaurant,
-            name: restaurant.name || "",
-            description: restaurant.description || "",
-            address: restaurant.address || "",
-            priceRange: restaurant.priceRange || "",
-            distance: restaurant.distance || "",
-            openHours: restaurant.openHours || "",
-            imageUrl: restaurant.imageUrl || "",
-            websiteUrl: restaurant.websiteUrl || "",
-            menuUrl: restaurant.menuUrl || "",
-            phoneNumber: restaurant.phoneNumber || "",
-            email: restaurant.email || "",
-            latitude: restaurant.latitude?.toString() || "",
-            longitude: restaurant.longitude?.toString() || "",
-            rating: restaurant.rating?.toString() || "0",
-            reviews: restaurant.reviews?.toString() || "0",
-            cuisine: restaurant.cuisine || [],
-            images: restaurant.images || [],
-            amenities: restaurant.amenities || [],
-            languages: restaurant.languages || ["English"],
-        });
-        setIsEditOpen(true);
+        setIsUpdating(true);
+        try {
+            const response = await fetch(`/api/admin/restaurants/${restaurant.id}`);
+            if (!response.ok) throw new Error("Failed to fetch details");
+            const data = await response.json();
+
+            setFormData({
+                ...data,
+                name: data.name || "",
+                description: data.description || "",
+                address: data.address || "",
+                priceRange: data.priceRange || "",
+                distance: data.distance || "",
+                openHours: data.openHours || "",
+                imageUrl: data.imageUrl || "",
+                websiteUrl: data.websiteUrl || "",
+                menuUrl: data.menuUrl || "",
+                phoneNumber: data.phoneNumber || "",
+                email: data.email || "",
+                latitude: data.latitude?.toString() || "",
+                longitude: data.longitude?.toString() || "",
+                rating: data.rating?.toString() || "0",
+                reviews: data.reviews?.toString() || "0",
+                cuisine: data.cuisine || [],
+                images: data.images || [],
+                amenities: data.amenities || [],
+                languages: data.languages || ["English"],
+                travelerPhotos: (data.travelerPhotos || []).map(p => ({
+                    ...p,
+                    user: p.user || "",
+                    caption: p.caption || ""
+                }))
+            });
+            setIsEditOpen(true);
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to load restaurant details");
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     const handleCreate = async () => {
@@ -692,18 +738,79 @@ export default function RestaurantManagementPage() {
                             </div>
 
                             <div className="space-y-6">
-                                <div className="space-y-2.5">
-                                    <Label htmlFor="imageUrl" className="text-[11px] font-black uppercase tracking-widest text-slate-400">Master Brand Image (URL)</Label>
-                                    <div className="relative">
-                                        <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-300" />
-                                        <Input id="imageUrl" name="imageUrl" value={formData.imageUrl} onChange={handleInputChange} placeholder="https://images.unsplash.com/..." className="pl-11 rounded-xl border-slate-200 h-12 font-bold bg-slate-50/30" />
-                                    </div>
-                                    {formData.imageUrl && (
-                                        <div className="mt-4 h-48 w-full rounded-2xl overflow-hidden border border-slate-200 shadow-md relative group">
-                                            <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover transition-transform group-hover:scale-105" />
-                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
-                                                <span className="text-white text-[10px] font-black uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full border border-white/20">Brand Asset Preview</span>
-                                            </div>
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Master Brand Image</Label>
+                                    <Dropzone
+                                        provider="cloudinary"
+                                        maxFiles={1}
+                                        onFilesChange={(files) => {
+                                            setFormData(prev => ({
+                                                ...prev,
+                                                imageUrl: files[0]?.publicUrl || ""
+                                            }));
+                                        }}
+                                        initialFiles={formData.imageUrl ? [formData.imageUrl] : []}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 6: Traveler Photos (Backend Migration) */}
+                        <div className="space-y-8">
+                            <div className="flex items-center gap-3">
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Traveler Community Photos</span>
+                                <div className="h-px bg-slate-100 flex-1" />
+                            </div>
+
+                            <div className="space-y-6">
+                                <p className="text-[11px] text-slate-400 font-medium">Manage authentic traveler photos. These are stored in a dedicated database table for performance.</p>
+
+                                <div className="space-y-4">
+                                    <Label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Upload Community Photos</Label>
+                                    <Dropzone
+                                        provider="cloudinary"
+                                        maxFiles={10}
+                                        onFilesChange={(files) => {
+                                            const newPhotos = files
+                                                .filter(f => f.publicUrl)
+                                                .map(f => {
+                                                    // Try to find existing photo by URL to preserve caption/user
+                                                    const existing = formData.travelerPhotos.find(p => p.imageUrl === f.publicUrl);
+                                                    return {
+                                                        imageUrl: f.publicUrl,
+                                                        caption: existing?.caption || "",
+                                                        user: existing?.user || ""
+                                                    };
+                                                });
+                                            setFormData(prev => ({ ...prev, travelerPhotos: newPhotos }));
+                                        }}
+                                        initialFiles={formData.travelerPhotos.map(p => p.imageUrl)}
+                                    />
+
+                                    {formData.travelerPhotos.length > 0 && (
+                                        <div className="space-y-4 mt-6">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Photo Details</span>
+                                            {formData.travelerPhotos.map((photo, index) => (
+                                                <div key={index} className="p-4 rounded-2xl bg-white border border-slate-100 flex gap-4 shadow-sm items-center">
+                                                    <div className="h-16 w-16 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+                                                        <img src={photo.imageUrl} alt="" className="w-full h-full object-cover" />
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-4 flex-1">
+                                                        <Input
+                                                            value={photo.user || ""}
+                                                            onChange={(e) => handleTravelerPhotoChange(index, "user", e.target.value)}
+                                                            placeholder="Photographer..."
+                                                            className="rounded-lg h-9 text-xs"
+                                                        />
+                                                        <Input
+                                                            value={photo.caption || ""}
+                                                            onChange={(e) => handleTravelerPhotoChange(index, "caption", e.target.value)}
+                                                            placeholder="Caption..."
+                                                            className="rounded-lg h-9 text-xs"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>

@@ -52,7 +52,6 @@ export function RestaurantsExplorer({ initialRestaurants = [], allCuisines = [],
     const router = useRouter();
     const pathname = usePathname();
     const initialSearch = searchParams.get("search") || "";
-    const debouncedSearchQuery = useDebounce(searchQuery, 500);
 
     const [restaurants, setRestaurants] = useState(initialRestaurants);
     const [hasMore, setHasMore] = useState(initialRestaurants.length >= 12);

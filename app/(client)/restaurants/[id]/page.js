@@ -1,7 +1,7 @@
 import React from "react";
 import { RestaurantDetails } from "@/components/site/RestaurantDetails";
 import { db } from "@/db";
-import { restaurants, reviews } from "@/db/schema";
+import { restaurants, reviews, travelerPhotos } from "@/db/schema";
 import { eq, ne, desc, sql } from "drizzle-orm";
 
 export const dynamic = 'force-dynamic';
@@ -10,10 +10,11 @@ export default async function RestaurantDetailPage({ params }) {
     const { id } = await params;
 
     // Fetch restaurant, reviews, and related data in parallel
-    const [restaurantResult, reviewsResult, relatedResult] = await Promise.all([
+    const [restaurantResult, reviewsResult, relatedResult, photosResult] = await Promise.all([
         db.select().from(restaurants).where(eq(restaurants.id, id)),
         db.select().from(reviews).where(eq(reviews.restaurantId, id)).orderBy(desc(reviews.createdAt)).limit(6),
-        db.select().from(restaurants).where(ne(restaurants.id, id)).orderBy(sql`RANDOM()`).limit(4)
+        db.select().from(restaurants).where(ne(restaurants.id, id)).orderBy(sql`RANDOM()`).limit(4),
+        db.select().from(travelerPhotos).where(eq(travelerPhotos.restaurantId, id))
     ]);
 
     const restaurant = restaurantResult[0] || null;
@@ -37,6 +38,7 @@ export default async function RestaurantDetailPage({ params }) {
                 restaurant={restaurant}
                 initialReviews={reviewsResult}
                 initialRelated={relatedResult}
+                travelerPhotos={photosResult}
             />
         </div>
     );

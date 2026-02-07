@@ -8,7 +8,7 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
@@ -48,8 +48,8 @@ export function Dropzone({
 
   maxFiles = 5,
 
-  // 10MB
-  maxSize = 1024 * 1024 * 10,
+  // 2MB (Matches user request)
+  maxSize = 1024 * 1024 * 2,
 
   onFilesChange,
   className,
@@ -99,8 +99,19 @@ export function Dropzone({
     }
   }, [initialFiles]);
 
+  const prevFilesRef = useRef("");
+
   useEffect(() => {
-    onFilesChange?.(files);
+    const currentUrls = files
+      .map(f => f.publicUrl)
+      .filter(Boolean)
+      .sort()
+      .join(",");
+
+    if (currentUrls !== prevFilesRef.current) {
+      prevFilesRef.current = currentUrls;
+      onFilesChange?.(files);
+    }
   }, [files, onFilesChange]);
 
   const removeFile = async (fileId) => {
@@ -150,7 +161,62 @@ export function Dropzone({
       prevFiles.map((f) => (f.file === file ? { ...f, uploading: true } : f)));
 
     try {
-      // Modified to point to the generic upload route we are creating for R2
+      if (provider === "cloudinary") {
+        // Step 1: Get signature
+        const sigResponse = await fetch("/api/upload/cloudinary", { method: "POST" });
+        if (!sigResponse.ok) throw new Error("Failed to get signature");
+        const { signature, timestamp, cloudName, apiKey, uploadPreset } = await sigResponse.json();
+
+        // Step 2: Upload to Cloudinary
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("signature", signature);
+        formData.append("timestamp", timestamp);
+        formData.append("api_key", apiKey);
+        formData.append("upload_preset", uploadPreset);
+
+        const xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            setFiles((prevFiles) =>
+              prevFiles.map((f) =>
+                f.file === file ? { ...f, progress: Math.round(percentComplete) } : f));
+          }
+        };
+
+        const uploadPromise = new Promise((resolve, reject) => {
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const response = JSON.parse(xhr.responseText);
+              setFiles((prevFiles) =>
+                prevFiles.map((f) =>
+                  f.file === file
+                    ? { ...f, progress: 100, uploading: false, publicUrl: response.secure_url, key: response.public_id }
+                    : f));
+              toast.success("Image uploaded to cloud.");
+              resolve();
+            } else {
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                console.error("Cloudinary Error Response:", errorData);
+                toast.error(`Cloudinary Error: ${errorData.error?.message || "Upload failed"}`);
+              } catch (e) {
+                console.error("Cloudinary failed with status:", xhr.status, xhr.responseText);
+              }
+              reject(new Error("Cloudinary upload failed"));
+            }
+          };
+          xhr.onerror = () => reject(new Error("Network error during upload"));
+        });
+
+        xhr.open("POST", `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`);
+        xhr.send(formData);
+        await uploadPromise;
+        return;
+      }
+
+      // Existing R2/S3 logic fallback
       const endpoint = "/api/upload";
       const presignedResponse = await fetch(endpoint, {
         method: "POST",
@@ -217,7 +283,7 @@ export function Dropzone({
         xhr.send(file);
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Upload failed");
       setFiles((prevFiles) =>
         prevFiles.map((f) =>
@@ -413,37 +479,33 @@ export function Dropzone({
       <Card
         {...getRootProps()}
         className={cn(
-          "relative cursor-pointer border-2 border-dashed transition-colors duration-200 ease-in-out",
-          isCompact ? "h-32" : "h-64",
+          "relative cursor-pointer border-2 border-dashed transition-all duration-300 ease-in-out bg-slate-50/50 hover:bg-slate-50",
+          isCompact ? "h-32" : "h-48",
           isDragActive
-            ? "border-solid border-primary bg-primary/10"
-            : "border-border hover:border-primary",
+            ? "border-primary bg-primary/5 shadow-inner"
+            : "border-slate-200 hover:border-primary/40",
           disabled && "cursor-not-allowed opacity-50"
         )}>
         <CardContent className="flex h-full w-full items-center justify-center p-4">
           <input {...getInputProps()} />
           {isDragActive ? (
             <div className="flex flex-col items-center gap-2">
-              <Upload className="h-8 w-8 text-primary" />
-              <p className="text-center text-sm">Drop the files here...</p>
+              <CloudUpload className="h-10 w-10 text-primary animate-bounce" />
+              <p className="text-center text-sm font-bold text-primary">Release to upload assets</p>
             </div>
           ) : (
-            <div className="flex flex-col items-center gap-3">
-              <div className="flex gap-2">
-                <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                <File className="h-6 w-6 text-muted-foreground" />
+            <div className="flex flex-col items-center gap-4">
+              <div className="p-4 rounded-2xl bg-white shadow-sm border border-slate-100">
+                <Upload className="h-8 w-8 text-slate-400" />
               </div>
-              <p className="text-center text-sm text-muted-foreground">
-                Drag & drop files here, or click to select
-              </p>
-              <Button size={isCompact ? "sm" : "default"} type="button">
-                Select Files
-              </Button>
-              {helperText && (
-                <p className="text-center text-xs text-muted-foreground">
-                  {helperText}
+              <div className="text-center space-y-1">
+                <p className="text-sm font-bold text-slate-600">
+                  Drag & drop or click to upload images
                 </p>
-              )}
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">
+                  Supports: JPG, PNG, Webp (max {maxSize / (1024 * 1024)}MB each)
+                </p>
+              </div>
             </div>
           )}
         </CardContent>

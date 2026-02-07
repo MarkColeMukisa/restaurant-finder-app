@@ -14,6 +14,10 @@ export const metadata = {
   manifest: "/manifest.webmanifest", // Explicitly link if needed, though Next.js usually handles it. But for PWA plugin compatibility, safe to add. 
   // Actually, app/manifest.js generates /manifest.webmanifest and injects the link automatically. 
   // But let's add apple logic.
+  icons: {
+    icon: "/logo.svg",
+    apple: "/logo.svg",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

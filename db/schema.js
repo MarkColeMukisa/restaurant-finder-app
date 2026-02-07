@@ -109,3 +109,12 @@ export const favorites = pgTable("favorites", {
     createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+export const travelerPhotos = pgTable("traveler_photos", {
+    id: text("id").primaryKey(),
+    restaurantId: text("restaurantId").notNull().references(() => restaurants.id, { onDelete: "cascade" }),
+    imageUrl: text("imageUrl").notNull(),
+    caption: text("caption"),
+    user: text("user"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+

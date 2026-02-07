@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { restaurants } from "@/db/schema";
+import { restaurants, travelerPhotos } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
@@ -76,6 +76,18 @@ export async function POST(req) {
             createdAt: new Date(),
             updatedAt: new Date(),
         });
+
+        // Traveler Photos insertion
+        if (Array.isArray(body.travelerPhotos) && body.travelerPhotos.length > 0) {
+            const photosToInsert = body.travelerPhotos.map(photo => ({
+                id: uuidv4(),
+                restaurantId: id,
+                imageUrl: photo.imageUrl,
+                caption: photo.caption || null,
+                user: photo.user || null,
+            }));
+            await db.insert(travelerPhotos).values(photosToInsert);
+        }
 
         return NextResponse.json({ id, message: "Restaurant created successfully" });
     } catch (error) {

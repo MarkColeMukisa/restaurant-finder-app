@@ -35,13 +35,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { useState } from "react";
-import { travellerPhotos } from "@/lib/dummy-data";
+import { authClient } from "@/lib/auth-client";
 import { authClient } from "@/lib/auth-client";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useFavorites } from "@/hooks/useFavorites";
 
-export function RestaurantDetails({ restaurant, initialReviews = [], initialRelated = [] }) {
+export function RestaurantDetails({ restaurant, initialReviews = [], initialRelated = [], travelerPhotos = [] }) {
     const [isReviewOpen, setIsReviewOpen] = useState(false);
     const [selectedRating, setSelectedRating] = useState(0);
     const [reviewTitle, setReviewTitle] = useState("");
@@ -665,24 +664,32 @@ export function RestaurantDetails({ restaurant, initialReviews = [], initialRela
                     </div>
 
                     <div className="flex gap-4 overflow-x-auto pb-6 snap-x scrollbar-hide -mx-6 px-6">
-                        {travellerPhotos.filter(p => p.restaurantId === restaurant.id).map((photo) => (
-                            <div key={photo.id} className="group relative min-w-[260px] md:min-w-[300px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer snap-center shrink-0 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300">
-                                <img
-                                    src={photo.imageUrl}
-                                    alt={photo.caption}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
-                                    <p className="text-white font-bold text-lg leading-tight mb-1">{photo.caption}</p>
-                                    <div className="flex items-center gap-2">
-                                        <div className="h-6 w-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-[10px] uppercase font-bold text-white">
-                                            {photo.user.charAt(0)}
+                        {travelerPhotos.length > 0 ? (
+                            travelerPhotos.map((photo) => (
+                                <div key={photo.id} className="group relative min-w-[260px] md:min-w-[300px] aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer snap-center shrink-0 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300">
+                                    <img
+                                        src={photo.imageUrl}
+                                        alt={photo.caption}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5">
+                                        <p className="text-white font-bold text-lg leading-tight mb-1">{photo.caption}</p>
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-6 w-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-[10px] uppercase font-bold text-white">
+                                                {photo.user?.charAt(0) || "T"}
+                                            </div>
+                                            <p className="text-white/90 text-xs font-medium uppercase tracking-wide">by {photo.user || "Traveler"}</p>
                                         </div>
-                                        <p className="text-white/90 text-xs font-medium uppercase tracking-wide">by {photo.user}</p>
                                     </div>
                                 </div>
+                            ))
+                        ) : (
+                            <div className="w-full py-20 flex flex-col items-center justify-center text-center bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-100">
+                                <Users size={40} className="text-slate-200 mb-4" />
+                                <p className="text-slate-400 font-medium">No traveler photos yet.</p>
+                                <p className="text-[10px] text-slate-300 uppercase tracking-widest mt-1">Be the first to share an expert capture</p>
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             </div>

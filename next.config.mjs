@@ -20,6 +20,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'pub-*.r2.dev', // Wildcard for R2 dev URLs
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ],
   },
 };
