@@ -150,7 +150,7 @@ export function Header() {
                                             <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Profile</span>
                                         </DropdownMenuItem>
                                     </Link>
-                                    <Link href="/profile/favorites">
+                                    <Link href="/favorites">
                                         <DropdownMenuItem className="rounded-xl cursor-pointer py-3 px-3 hover:bg-slate-50 transition-colors group">
                                             <Heart size={16} className="mr-3 text-red-500 group-hover:scale-110 transition-transform" />
                                             <span className="font-bold text-[11px] uppercase tracking-widest text-foreground/80">Favourites</span>
