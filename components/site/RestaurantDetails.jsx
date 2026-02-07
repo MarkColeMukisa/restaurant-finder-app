@@ -36,7 +36,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { authClient } from "@/lib/auth-client";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useFavorites } from "@/hooks/useFavorites";
 

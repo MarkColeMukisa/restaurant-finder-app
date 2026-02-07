@@ -739,17 +739,19 @@ export default function RestaurantManagementPage() {
 
                             <div className="space-y-6">
                                 <div className="space-y-4">
-                                    <Label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Master Brand Image</Label>
+                                    <Label className="text-[11px] font-black uppercase tracking-widest text-slate-400">Brand Gallery (First = Card Image)</Label>
                                     <Dropzone
                                         provider="cloudinary"
-                                        maxFiles={1}
+                                        maxFiles={10}
                                         onFilesChange={(files) => {
+                                            const urls = files.map(f => f.publicUrl).filter(Boolean);
                                             setFormData(prev => ({
                                                 ...prev,
-                                                imageUrl: files[0]?.publicUrl || ""
+                                                imageUrl: urls[0] || "",
+                                                images: urls
                                             }));
                                         }}
-                                        initialFiles={formData.imageUrl ? [formData.imageUrl] : []}
+                                        initialFiles={formData.images?.length > 0 ? formData.images : (formData.imageUrl ? [formData.imageUrl] : [])}
                                     />
                                 </div>
                             </div>
