@@ -39,7 +39,7 @@ export function CTA() {
                                     Request Invitation
                                     <ArrowRight size={18} />
                                 </Button>
-                                <Button variant="outline" className="rounded-none border-white/20 text-white hover:bg-white hover:text-[#1A1A1A] h-16 px-12 font-black uppercase tracking-widest text-xs transition-all">
+                                <Button variant="outline" className="rounded-none border-white/20 text-black hover:bg-white hover:text-[#1A1A1A] h-16 px-12 font-black uppercase tracking-widest text-xs transition-all">
                                     View Premium Benefits
                                 </Button>
                             </div>
