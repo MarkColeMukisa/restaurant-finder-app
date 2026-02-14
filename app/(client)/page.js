@@ -17,7 +17,7 @@ import { desc, eq, gt } from "drizzle-orm";
 export const dynamic = 'force-dynamic';
 
 export default async function LandingPage() {
-  // Fetch all data in parallel for performance
+  // Fetch all data in parallel for performance : SERVER ACTION
   let allRestaurants = [], popularRestaurants = [], newRestaurants = [], allLocations = [], allCuisinesRaw = [];
   try {
     [allRestaurants, popularRestaurants, newRestaurants, allLocations, allCuisinesRaw] = await Promise.all([

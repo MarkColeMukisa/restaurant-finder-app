@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Utensils, Menu, X, ChevronDown, User, LogOut, Heart, LayoutDashboard, Shield, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +38,7 @@ import {
 } from "@/components/ui/sheet";
 
 export function Header() {
+    const pathname = usePathname();
     const { data: session, isPending } = authClient.useSession();
     const [scrolled, setScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -83,15 +86,23 @@ export function Header() {
 
                 {/* Navigation */}
                 <div className="hidden lg:flex items-center gap-10">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            className="text-[15px] font-semibold text-foreground/60 hover:text-foreground transition-colors"
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
+                    {navLinks.map((link) => {
+                        const isActive = link.href === "/"
+                            ? pathname === "/"
+                            : pathname.startsWith(link.href);
+                        return (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                className={cn(
+                                    "text-[15px] font-semibold transition-colors",
+                                    isActive ? "text-primary font-bold" : "text-foreground/60 hover:text-foreground"
+                                )}
+                            >
+                                {link.name}
+                            </Link>
+                        );
+                    })}
                 </div>
 
                 {/* Actions & Mobile Trigger */}
@@ -211,17 +222,28 @@ export function Header() {
 
                             {/* Navigation Links */}
                             <div className="flex-1 overflow-y-auto -mx-6 px-6 flex flex-col gap-6">
-                                {navLinks.map((link) => (
-                                    <Link
-                                        key={link.name}
-                                        href={link.href}
-                                        className="text-lg font-semibold text-foreground hover:text-primary transition-colors flex items-center justify-between group"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                    >
-                                        {link.name}
-                                        <div className="h-1.5 w-1.5 rounded-full bg-slate-200 group-hover:bg-primary transition-colors" />
-                                    </Link>
-                                ))}
+                                {navLinks.map((link) => {
+                                    const isActive = link.href === "/"
+                                        ? pathname === "/"
+                                        : pathname.startsWith(link.href);
+                                    return (
+                                        <Link
+                                            key={link.name}
+                                            href={link.href}
+                                            className={cn(
+                                                "text-lg font-semibold transition-colors flex items-center justify-between group",
+                                                isActive ? "text-primary" : "text-foreground hover:text-primary"
+                                            )}
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            {link.name}
+                                            <div className={cn(
+                                                "h-1.5 w-1.5 rounded-full transition-colors",
+                                                isActive ? "bg-primary" : "bg-slate-200 group-hover:bg-primary"
+                                            )} />
+                                        </Link>
+                                    );
+                                })}
                             </div>
 
                             {/* Footer: Auth Only (Logged Out) */}
@@ -229,7 +251,7 @@ export function Header() {
                                 <div className="mt-auto pt-8 border-t border-slate-100 shrink-0">
                                     <div className="flex flex-col gap-3">
                                         <Button
-                                            className="w-full bg-[#0d0c22] rounded-xl h-12 font-bold"
+                                            className="w-full bg-[#0d0c22] text-white rounded-xl h-12 font-bold"
                                             onClick={() => {
                                                 setIsMobileMenuOpen(false);
                                                 openAuth("login");
