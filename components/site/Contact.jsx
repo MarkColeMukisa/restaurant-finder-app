@@ -166,8 +166,8 @@ export function Contact() {
                                 <div>
                                     <h3 className="font-bold text-lg">Headquarters</h3>
                                     <p className="text-foreground/60 leading-relaxed">
-                                        123 Culinary Avenue, <br />
-                                        Foodie District, NY 10012
+                                        MUBS, <br />
+                                        Nakawa, Kampala, Uganda
                                     </p>
                                 </div>
                             </div>
@@ -177,7 +177,7 @@ export function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-lg">Email Us</h3>
-                                    <p className="text-foreground/60">hello@dinediscover.com</p>
+                                    <p className="text-foreground/60">help@dinediscover.com</p>
                                     <p className="text-foreground/60">partners@dinediscover.com</p>
                                 </div>
                             </div>
